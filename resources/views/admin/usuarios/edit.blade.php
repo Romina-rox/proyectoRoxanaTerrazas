@@ -1,16 +1,16 @@
 @extends('adminlte::page')
 
 @section('content_header')
-    <h1><b>Personal hospitalario / Editar usuario</b></h1>
+    <h1><b>EDITAR USUARIOS REGISTRADOS</b></h1>
     <hr>
 @stop
 
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <div class="card card-primary">
+            <div class="card card-success">
                 <div class="card-header">
-                    <h3 class="card-title">Editar datos del usuario</h3>
+                    <h3 class="card-title">EDITAR USUARIO</h3>
                 </div>
                 <div class="card-body">
                     <form action="{{ url('admin/usuarios/'.$usuario->id) }}" method="post">
@@ -211,7 +211,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <a href="{{ url('/admin/usuarios') }}" class="btn btn-secondary">Cancelar</a>
-                                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                                    <button type="submit" class="btn btn-success">Actualizar</button>
                                 </div>
                             </div>
                         </div>

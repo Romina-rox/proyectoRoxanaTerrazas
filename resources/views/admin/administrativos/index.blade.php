@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('content_header')
-    <h1><b>Listado del personal administrativo </b></h1>
+    <h1><b>LISTADO DE PERSONAL ADMINISTRATIVO </b></h1>
     <hr>
 @stop
 
@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Administrativos registrados</h3>
+                    <h3 class="card-title">ADMINISTRATIVOS REGISTRADOS</h3>
 
                     <div class="card-tools">
                         <a href="{{url('/admin/administrativos/create')}}" class="btn btn-primary"> Crear nuevo</a>
@@ -23,10 +23,11 @@
                         <thead>
                         <tr>
                             <th style="text-align: center">Nro</th>
+                            <th style="text-align: center">Rol</th>
                             <th style="text-align: center">Nombres</th>
                             <th style="text-align: center">Apellidos</th>
                             <th style="text-align: center">Cédula</th>
-                            <th style="text-align: center">Teléfono</th>
+                            <th style="text-align: center">Nº Celular</th>
                             <th style="text-align: center">Correo</th>
                             <th style="text-align: center">Profesión</th>
                             <th style="text-align: center">Acción</th>
@@ -39,7 +40,7 @@
                         @foreach($administrativos as $administrativo)
                             <tr>
                                 <td style="text-align: center">{{ $contador++ }}</td>
-                               
+                                <td>{{ $administrativo->usuario->roles->pluck('name')->implode(', ') }}</td>
                                 <td>{{ $administrativo->nombres }}</td>
                                 <td>{{ $administrativo->apellidos }}</td>
                                 <td>{{ $administrativo->ci }}</td>
@@ -83,28 +84,35 @@
                         </tbody>
                     </table>
                 </div>
+                <!-- /.card-body -->
             </div>
+            <!-- /.card -->
         </div>
     </div>
 @stop
 
 @section('css')
     <style>
+        /* Fondo transparente y sin borde en el contenedor */
         #example1_wrapper .dt-buttons {
             background-color: transparent;
             box-shadow: none;
             border: none;
             display: flex;
-            justify-content: center; 
-            gap: 10px; 
-            margin-bottom: 15px;
+            justify-content: center; /* Centrar los botones */
+            gap: 10px; /* Espaciado entre botones */
+            margin-bottom: 15px; /* Separar botones de la tabla */
         }
+
+        /* Estilo personalizado para los botones */
         #example1_wrapper .btn {
-            color: #fff; 
-            border-radius: 4px; 
-            padding: 5px 15px; 
-            font-size: 14px; 
+            color: #fff; /* Color del texto en blanco */
+            border-radius: 4px; /* Bordes redondeados */
+            padding: 5px 15px; /* Espaciado interno */
+            font-size: 14px; /* Tamaño de fuente */
         }
+
+        /* Colores por tipo de botón */
         .btn-danger { background-color: #dc3545; border: none; }
         .btn-success { background-color: #28a745; border: none; }
         .btn-info { background-color: #17a2b8; border: none; }

@@ -45,7 +45,7 @@ Route::get('/admin/roles/{id}', [App\Http\Controllers\RoleController::class, 'pe
 Route::post('/admin/roles/{id}', [App\Http\Controllers\RoleController::class, 'update_permisos'])->name('admin.roles.update_permisos')->middleware('auth','can:admin.roles.update_permisos');
 Route::get('/admin/roles/{id}/edit', [App\Http\Controllers\RoleController::class, 'edit'])->name('admin.roles.edit')->middleware('auth','can:admin.roles.edit');
 Route::put('/admin/roles/{id}', [App\Http\Controllers\RoleController::class, 'update'])->name('admin.roles.update')->middleware('auth','can:admin.roles.update');
-Route::delete('/admin/roles/{id}', [App\Http\Controllers\RoleController::class, 'destroy'])->name('admin.roles.destroy')->middleware('auth','can:admin.roles');
+Route::delete('/admin/roles/{id}', [App\Http\Controllers\RoleController::class, 'destroy'])->name('admin.roles.destroy')->middleware('auth','can:admin.roles.destroy');
 
 //rutas para administrador
 Route::get('/admin/administrativos', [App\Http\Controllers\AdministrativoController::class, 'index'])->name('admin.administrativos.index')->middleware('auth','can:admin.administrativos.index');
@@ -73,23 +73,6 @@ Route::get('/admin/equipos/{id}/edit', [App\Http\Controllers\EquipoController::c
 Route::put('/admin/equipos/{id}', [App\Http\Controllers\EquipoController::class, 'update'])->name('admin.equipos.update')->middleware('auth','can:admin.equipos.update');
 Route::delete('/admin/equipos/{id}', [App\Http\Controllers\EquipoController::class, 'destroy'])->name('admin.equipos.destroy')->middleware('auth','can:admin.equipos.destroy');
 
-//rutas para tecnicos
-Route::get('/admin/tecnicos', [App\Http\Controllers\TecnicoController::class, 'index'])->name('admin.tecnicos.index')->middleware('auth','can:admin.tecnicos.index');
-Route::get('/admin/tecnicos/create', [App\Http\Controllers\TecnicoController::class, 'create'])->name('admin.tecnicos.create')->middleware('auth','can:admin.tecnicos.create');
-Route::post('/admin/tecnicos/create', [App\Http\Controllers\TecnicoController::class, 'store'])->name('admin.tecnicos.store')->middleware('auth','can:admin.tecnicos.store');
-Route::get('/admin/tecnicos/{id}', [App\Http\Controllers\TecnicoController::class, 'show'])->name('admin.tecnicos.show')->middleware('auth','can:admin.tecnicos.show');
-Route::get('/admin/tecnicos/{id}/edit', [App\Http\Controllers\TecnicoController::class, 'edit'])->name('admin.tecnicos.edit')->middleware('auth','can:admin.tecnicos.edit');
-Route::put('/admin/tecnicos/{id}', [App\Http\Controllers\TecnicoController::class, 'update'])->name('admin.tecnicos.update')->middleware('auth','can:admin.tecnicos.update');
-Route::delete('/admin/tecnicos/{id}', [App\Http\Controllers\TecnicoController::class, 'destroy'])->name('admin.tecnicos.destroy')->middleware('auth','can:admin.tecnicos.destroy');
-
-//rutas para pasantes
-Route::get('/admin/pasantes', [App\Http\Controllers\PasanteController::class, 'index'])->name('admin.pasantes.index')->middleware('auth','can:admin.pasantes.index');
-Route::get('/admin/pasantes/create', [App\Http\Controllers\PasanteController::class, 'create'])->name('admin.pasantes.create')->middleware('auth','can:admin.pasantes.create');
-Route::post('/admin/pasantes/create', [App\Http\Controllers\PasanteController::class, 'store'])->name('admin.pasantes.store')->middleware('auth','can:admin.pasantes.store');
-Route::get('/admin/pasantes/{id}', [App\Http\Controllers\PasanteController::class, 'show'])->name('admin.pasantes.show')->middleware('auth','can:admin.pasantes.show');
-Route::get('/admin/pasantes/{id}/edit', [App\Http\Controllers\PasanteController::class, 'edit'])->name('admin.pasantes.edit')->middleware('auth','can:admin.pasantes.edit');
-Route::put('/admin/pasantes/{id}', [App\Http\Controllers\PasanteController::class, 'update'])->name('admin.pasantes.update')->middleware('auth','can:admin.pasantes.update');
-Route::delete('/admin/pasantes/{id}', [App\Http\Controllers\PasanteController::class, 'destroy'])->name('admin.pasantes.destroy')->middleware('auth','can:admin.pasantes.destroy');
 
 //rutas para usuarios
 Route::get('/admin/usuarios', [App\Http\Controllers\UsuarioController::class, 'index'])->name('admin.usuarios.index')->middleware('auth','can:admin.usuarios.index');
@@ -101,9 +84,11 @@ Route::put('/admin/usuarios/{id}', [App\Http\Controllers\UsuarioController::clas
 Route::delete('/admin/usuarios/{id}', [App\Http\Controllers\UsuarioController::class, 'destroy'])->name('admin.usuarios.destroy')->middleware('auth','can:admin.usuarios.destroy');
 
 
-// Rutas para el módulo de tickets (agregar esto al archivo web.php)
+// ============================================
+// RUTAS DE TICKETS ACTUALIZADAS
+// ============================================
 Route::middleware(['auth'])->prefix('admin')->group(function () {
-    // Rutas principales de tickets
+    // Rutas principales
     Route::get('/tickets', [TicketController::class, 'index'])->name('admin.tickets.index');
     Route::get('/tickets/create', [TicketController::class, 'create'])->name('admin.tickets.create');
     Route::post('/tickets/create', [TicketController::class, 'store'])->name('admin.tickets.store');
@@ -112,14 +97,26 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::put('/tickets/{id}', [TicketController::class, 'update'])->name('admin.tickets.update');
     Route::delete('/tickets/{id}', [TicketController::class, 'destroy'])->name('admin.tickets.destroy');
     
-    // Rutas especiales (DEBEN IR ANTES de Resource para evitar conflictos)
+    // Aceptar ticket
     Route::get('/tickets/{id}/aceptar', [TicketController::class, 'aceptarTicket'])->name('tickets.aceptar');
-    Route::post('/tickets/{id}/devuelto', [TicketController::class, 'marcarDevuelto'])->name('tickets.devuelto');
-    Route::get('/tickets/{id}/comprobante', [TicketController::class, 'comprobante'])->name('tickets.comprobante');
-    Route::get('/tickets/{id}/descargar-word', [TicketController::class, 'descargarWord'])->name('tickets.descargarWord');
-    Route::get('/tickets-pendientes', [TicketController::class, 'pendientes'])->name('tickets.pendientes');
+    
+    // SEPARADO: Devolución al usuario (reparados)
+    Route::post('/tickets/{id}/devuelto-usuario', [TicketController::class, 'marcarDevueltoUsuario'])->name('tickets.devuelto.usuario');
+    
+    // SEPARADO: Entrega a Activos Fijos (bajas)
+    Route::post('/tickets/{id}/entregado-activos-fijos', [TicketController::class, 'marcarEntregadoActivosFijos'])->name('tickets.entregado.activos.fijos');
+    
+    // Comprobantes separados
+    Route::get('/tickets/{id}/comprobante-usuario', [TicketController::class, 'comprobanteUsuario'])->name('tickets.comprobante.usuario');
+    Route::get('/tickets/{id}/comprobante-activos-fijos', [TicketController::class, 'comprobanteActivosFijos'])->name('tickets.comprobante.activos.fijos');
+    
+    // Pendientes SEPARADOS
+    Route::get('/tickets-pendientes-usuario', [TicketController::class, 'pendientesUsuario'])->name('tickets.pendientes.usuario');
+    Route::get('/tickets-pendientes-activos-fijos', [TicketController::class, 'pendientesActivosFijos'])->name('tickets.pendientes.activos.fijos');
+    
+    // Alertas de tiempo
     Route::get('/tickets-alerta-tiempo', [TicketController::class, 'alertaTiempo'])->name('tickets.alertaTiempo');
-    Route::get('/tickets-dashboard', [TicketController::class, 'dashboard'])->name('tickets.dashboard');
-    // Ruta Resource genérica (CRUD básico)
-    Route::resource('tickets', TicketController::class)->names('tickets');
+    
+    // HISTORIAL (reemplaza dashboard)
+    Route::get('/tickets-historial', [TicketController::class, 'historial'])->name('tickets.historial');
 });

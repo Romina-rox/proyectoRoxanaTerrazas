@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('content_header')
-    <h1><b>Modificar Hospital</b></h1>
+    <h1><b> EDITAR CENTRO DE SALUD</b></h1>
     <hr>
 @stop
 
@@ -10,7 +10,7 @@
         <div class="col-md-6">
             <div class="card card-success">
                 <div class="card-header">
-                    <h3 class="card-title">Lleno los datos del formulario</h3>
+                    <h3 class="card-title">EDITAR DATOS DEL FORMULARIO</h3>
                 </div>
                 <div class="card-body">
                     <form action="{{url('/admin/hospitales',$hospital->id)}}" method="post">

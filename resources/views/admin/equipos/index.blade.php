@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('content_header')
-    <h1><b>Listado de Equipos Academicos </b></h1>
+    <h1><b>LISTADO DE TIPOS DE EQUIPO </b></h1>
     <hr>
 @stop
 
@@ -10,7 +10,7 @@
         <div class="col-md-8">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Equipos registrados</h3>
+                    <h3 class="card-title">EQUIPOS REGISTRADOS</h3>
 
                     <div class="card-tools">
                         <a href="{{url('/admin/equipos/create')}}" class="btn btn-primary"> Crear nuevo</a>

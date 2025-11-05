@@ -1,14 +1,14 @@
 @extends('adminlte::page')
 
 @section('content_header')
-    <h1><b>🚨 Alertas de Tiempo - Tickets Urgentes</b></h1>
+    <h1><b>Alertas de Tiempo - Tickets Urgentes</b></h1>
     <hr>
 @stop
 
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <div class="card card-danger">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title">Tickets que exceden 4 días en reparación</h3>
                     <div class="card-tools">
@@ -17,14 +17,14 @@
                 </div>
                 <div class="card-body">
                     @if($tickets->count() > 0)
-                        <div class="alert alert-danger">
+                        <div class="alert alert-warning">
                             <h5><i class="icon fas fa-exclamation-triangle"></i> Atención Requerida:</h5>
                             Los siguientes tickets han excedido el tiempo límite de <strong>4 días</strong> desde su aceptación.
                             Se requiere atención inmediata del personal técnico.
                         </div>
                         
                         <table id="example1" class="table table-bordered table-hover table-striped table-sm">
-                            <thead class="thead-dark">
+                            <thead class="thead">
                             <tr>
                                 <th style="text-align: center">Ticket #</th>
                                 <th style="text-align: center">Hospital</th>
@@ -45,7 +45,7 @@
                                     if ($diasTranscurridos > 10) $prioridad = 'critica';
                                     elseif ($diasTranscurridos > 7) $prioridad = 'muy-alta';
                                 @endphp
-                                <tr class="{{$prioridad == 'critica' ? 'table-danger' : ($prioridad == 'muy-alta' ? 'table-warning' : 'table-info')}}">
+                                <tr class="{{$prioridad == 'critica' ? 'table-danger-light' : ($prioridad == 'muy-alta' ? 'table-warning-light' : 'table-info-light')}}">
                                     <td style="text-align: center">
                                         <strong>{{$ticket->id}}</strong>
                                         <br><small class="text-muted">{{$ticket->created_at->format('d/m/Y')}}</small>
@@ -71,21 +71,21 @@
                                         <br><small class="text-muted">{{$ticket->fecha_aceptacion->diffForHumans()}}</small>
                                     </td>
                                     <td style="text-align: center">
-                                        <span class="badge badge-{{$prioridad == 'critica' ? 'danger' : ($prioridad == 'muy-alta' ? 'warning' : 'info')}} badge-lg">
+                                        <span class="badge badge-{{$prioridad == 'critica' ? 'danger-light' : ($prioridad == 'muy-alta' ? 'warning-light' : 'info-light')}} badge-lg">
                                             <i class="fas fa-clock"></i> {{$diasTranscurridos}} días
                                         </span>
                                     </td>
                                     <td style="text-align: center">
                                         @if($prioridad == 'critica')
-                                            <span class="badge badge-danger">
+                                            <span class="badge badge-danger-light">
                                                 <i class="fas fa-exclamation-circle"></i> CRÍTICA
                                             </span>
                                         @elseif($prioridad == 'muy-alta')
-                                            <span class="badge badge-warning">
+                                            <span class="badge badge-warning-light">
                                                 <i class="fas fa-exclamation-triangle"></i> MUY ALTA
                                             </span>
                                         @else
-                                            <span class="badge badge-info">
+                                            <span class="badge badge-info-light">
                                                 <i class="fas fa-info-circle"></i> ALTA
                                             </span>
                                         @endif
@@ -114,115 +114,56 @@
                             </tbody>
                         </table>
                     @else
-                        <div class="alert alert-success text-center">
+                        <div class="alert text-center">
                             <h4><i class="icon fas fa-check-circle"></i> ¡Excelente trabajo!</h4>
                             <p>No hay tickets con alertas de tiempo. Todos los equipos están siendo procesados dentro del tiempo establecido.</p>
-                            <a href="{{url('/admin/tickets')}}" class="btn btn-primary">
-                                <i class="fas fa-arrow-left"></i> Volver a Tickets
-                            </a>
+                            
                         </div>
                     @endif
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Resumen de estadísticas -->
-    @if($tickets->count() > 0)
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card card-info">
-                <div class="card-header">
-                    <h3 class="card-title">Estadísticas de Alertas</h3>
-                </div>
-                <div class="card-body">
-                    @php
-                        $criticos = $tickets->where('dias_transcurridos', '>', 10)->count();
-                        $muyAltos = $tickets->where('dias_transcurridos', '>', 7)->where('dias_transcurridos', '<=', 10)->count();
-                        $altos = $tickets->where('dias_transcurridos', '>', 4)->where('dias_transcurridos', '<=', 7)->count();
-                        $promedioTiempo = $tickets->avg('dias_transcurridos');
-                    @endphp
-                    
-                    <div class="info-box bg-danger">
-                        <span class="info-box-icon"><i class="fas fa-exclamation-circle"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Críticos (+10 días)</span>
-                            <span class="info-box-number">{{$criticos}}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="info-box bg-warning">
-                        <span class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Muy Altos (7-10 días)</span>
-                            <span class="info-box-number">{{$muyAltos}}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="info-box bg-info">
-                        <span class="info-box-icon"><i class="fas fa-info-circle"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Altos (4-7 días)</span>
-                            <span class="info-box-number">{{$altos}}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-3">
-                        <strong>Tiempo promedio de procesamiento:</strong>
-                        <span class="badge badge-primary">{{number_format($promedioTiempo, 1)}} días</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-8">
-            <div class="card card-warning">
-                <div class="card-header">
-                    <h3 class="card-title">Recomendaciones de Acción</h3>
-                </div>
-                <div class="card-body">
-                    <h5>Acciones Sugeridas:</h5>
-                    <ul>
-                        <li><strong>Tickets Críticos (>10 días):</strong> Requieren intervención inmediata del supervisor.</li>
-                        <li><strong>Tickets Muy Altos (7-10 días):</strong> Contactar al técnico asignado y evaluar recursos adicionales.</li>
-                        <li><strong>Tickets Altos (4-7 días):</strong> Seguimiento diario y priorización en el flujo de trabajo.</li>
-                    </ul>
-                    
-                    <h5 class="mt-3">Contactos de Escalamiento:</h5>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <small>
-                                <strong>Supervisor Técnico:</strong><br>
-                                Ext. 123 | supervisor@sacaba.gob.bo
-                            </small>
-                        </div>
-                        <div class="col-md-6">
-                            <small>
-                                <strong>Administrador del Sistema:</strong><br>
-                                Ext. 456 | admin@sacaba.gob.bo
-                            </small>
-                        </div>
-                    </div>
+                <div class="card-footer text-center">
+                    <a href="{{url('/admin/tickets')}}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left"></i> Volver a Gestión de Tickets
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-    @endif
 @stop
 
 @section('css')
     <style>
-        .table-danger { background-color: #f8d7da !important; }
-        .table-warning { background-color: #fff3cd !important; }
-        .table-info { background-color: #d1ecf1 !important; }
+        /* Colores suavizados para las alertas */
+        .table-danger-light { 
+            background-color: rgba(248, 215, 218, 0.3) !important; 
+            border-left: 4px solid #dc3545;
+        }
+        .table-warning-light { 
+            background-color: rgba(255, 243, 205, 0.3) !important; 
+            border-left: 4px solid #ffc107;
+        }
+        .table-info-light { 
+            background-color: rgba(209, 236, 241, 0.3) !important; 
+            border-left: 4px solid #17a2b8;
+        }
+        
+        /* Badges con colores suavizados */
+        .badge-danger-light {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .badge-warning-light {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .badge-info-light {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
         
         .badge-lg {
             font-size: 0.9rem;
             padding: 0.5rem 0.7rem;
-        }
-        
-        .info-box {
-            margin-bottom: 10px;
         }
         
         .btn-group-vertical .btn {
@@ -251,6 +192,22 @@
         .btn-info { background-color: #17a2b8; border: none; }
         .btn-warning { background-color: #ffc107; color: #212529; border: none; }
         .btn-default { background-color: #6e7176; color: #212529; border: none; }
+        
+        /* Mejoras para el botón de volver */
+        .card-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .btn-outline-primary {
+            border-color: #007bff;
+            color: #007bff;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
     </style>
 @stop
 

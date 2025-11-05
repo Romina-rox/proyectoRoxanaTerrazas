@@ -3,26 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Administrativo;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
-use App\Models\User; // Importa el modelo User ( que está en App\Models)
-use Illuminate\Support\Facades\Hash; // Importa la fachada Hash para el hashing de contraseñas
 
 class AdministrativoController extends Controller
-{ 
+{
     public function index()
     {
-              $administrativos = Administrativo::all();
-           return view('admin.administrativos.index', compact('administrativos'));
-    }
+        $administrativos = Administrativo::all();
+        return view('admin.administrativos.index', compact('administrativos'));
+    }  
     public function create()
     {
-               $roles = Role::all(); // Obtén todos los roles de la base de datos
-             return view('admin.administrativos.create', compact('roles'));
+      $roles = Role::all(); // Obtén todos los roles de la base de datos
+        return view('admin.administrativos.create', compact('roles'));
     }
     public function store(Request $request)
-    {
-    
+   {
         $request->validate([
             'nombres' => 'required',
             'apellidos' => 'required',
@@ -34,13 +33,18 @@ class AdministrativoController extends Controller
             'rol' => 'required',
             'email' => 'required|unique:users',
         ]);
-
-            $usuario = new User();
+        // Verificación para limitar a un solo administrador
+        if ($request->rol === 'administrador') {
+            $adminRole = Role::where('name', 'administrador')->first();
+            if ($adminRole && $adminRole->users()->count() > 0) {
+                return redirect()->back()->withErrors(['rol' => 'Ya existe un administrador registrado. No se puede crear otro.'])->withInput();
+            }
+        }
+            $usuario = new User();//al poner use se importa
             $usuario->name = $request->nombres . " " . $request->apellidos;
             $usuario->email = $request->email;
-            $usuario->password = Hash::make($request->ci);
-
-            
+            $usuario->password = Hash::make($request->ci);//importamos con hash
+     
             $usuario->save();
 
             $usuario->assignRole($request->rol);
@@ -57,9 +61,11 @@ class AdministrativoController extends Controller
             $administrativo->save();
 
             return redirect()->route('admin.administrativos.index')
-                ->with('mensaje', 'Personal registrado correctamente')
-                ->with('icono', 'success');
+            ->with('mensaje', 'Personal registrado correctamente')
+            ->with('icono', 'success');
     }
+
+
     public function show($id)
     {
         $roles=Role::all();
@@ -72,9 +78,8 @@ class AdministrativoController extends Controller
         $administrativo=Administrativo::find($id);
         return view('admin.administrativos.edit', compact('administrativo','roles'));
     }
-    public function update(Request $request, $id)
-    {
-
+    public function update(Request $request,  $id)
+  {
         $administrativo=Administrativo::find($id);
 
         $request->validate([
@@ -87,6 +92,16 @@ class AdministrativoController extends Controller
             'profesion' => 'required',
             'rol' => 'required|unique:users,email, '.$administrativo->usuario->id,
         ]);
+           // Verificación para limitar a un solo administrador
+        if ($request->rol === 'administrador') {
+            $adminRole = Role::where('name', 'administrador')->first();
+            if ($adminRole) {
+                $adminUsersCount = $adminRole->users()->where('id', '!=', $administrativo->usuario->id)->count();
+                if ($adminUsersCount > 0) {
+                    return redirect()->back()->withErrors(['rol' => 'Ya existe otro administrador registrado. No se puede asignar este rol.'])->withInput();
+                }
+            }
+        }
 
             $usuario = $administrativo->usuario;
             $usuario->name = $request->nombres . " " . $request->apellidos;
@@ -110,11 +125,7 @@ class AdministrativoController extends Controller
                 ->with('mensaje', 'Personal actualizado correctamente')
                 ->with('icono', 'success');
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
+    public function destroy( $id)
     {
         $administrativo=Administrativo::find($id);
         $administrativo->delete();

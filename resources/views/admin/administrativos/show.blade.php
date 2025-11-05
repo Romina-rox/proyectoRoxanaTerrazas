@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('content_header')
-    <h1><b>Pesonal administrativo/Datos del personal administrativo </b></h1>
+    <h1><b>DATOS DEL PERSONAL ADMINISTRATIVO </b></h1>
     <hr>
 @stop
 
@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title">Datos registrados </h3>
+                    <h3 class="card-title">DATOS REGISTRADOS</h3>
                     <!-- /.card-tools -->
                 </div>
                 <!-- /.card-header -->

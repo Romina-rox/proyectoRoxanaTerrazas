@@ -84,19 +84,23 @@
                                                 En Espera
                                             </option>
                                             <option value="aceptado" {{ $ticket->estado == 'aceptado' ? 'selected' : '' }}>
-                                                Aceptado
+                                                Aceptado (En Revisión)
                                             </option>
                                             <option value="reparado" {{ $ticket->estado == 'reparado' ? 'selected' : '' }}>
-                                                Reparado
+                                                ✅ Reparado (Listo para entrega)
                                             </option>
                                             <option value="baja" {{ $ticket->estado == 'baja' ? 'selected' : '' }}>
-                                                Dado de Baja
+                                                ❌ Dado de Baja (No reparable)
                                             </option>
                                             <option value="devuelto" {{ $ticket->estado == 'devuelto' ? 'selected' : '' }}>
-                                                Devuelto
+                                                Devuelto al Usuario
                                             </option>
                                         </select>
                                     </div>
+                                    <small class="text-muted" id="estado-ayuda">
+                                        <i class="fas fa-info-circle"></i> 
+                                        <span id="estado-texto">Seleccione el estado actual</span>
+                                    </small>
                                     @error('estado')
                                     <small style="color: red">{{$message}}</small>
                                     @enderror
@@ -106,7 +110,7 @@
 
                         <div class="row">
                             <!-- FECHA DE INGRESO -->
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="fecha_ingreso">Fecha de Ingreso <b>(*)</b></label>
                                     <div class="input-group mb-3">
@@ -123,9 +127,12 @@
                             </div>
 
                             <!-- FECHA DE SALIDA -->
-                            <div class="col-md-4" id="fecha_salida_group">
+                            <div class="col-md-6" id="fecha_salida_group">
                                 <div class="form-group">
-                                    <label for="fecha_salida">Fecha de Salida</label>
+                                    <label for="fecha_salida">
+                                        Fecha de Salida 
+                                        <span class="badge badge-warning" id="badge-requerido" style="display:none;">Requerido</span>
+                                    </label>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
@@ -134,7 +141,8 @@
                                                value="{{$ticket->fecha_salida ? $ticket->fecha_salida->format('Y-m-d') : ''}}">
                                     </div>
                                     <small class="text-muted">
-                                        Se asigna automáticamente al marcar como "Reparado" o "Dado de Baja"
+                                        <i class="fas fa-lightbulb"></i> 
+                                        Se completa automáticamente al marcar como Reparado o Dado de Baja
                                     </small>
                                     @error('fecha_salida')
                                     <small style="color: red">{{$message}}</small>
@@ -174,16 +182,22 @@
                             </div>
                         </div>
 
-                        <!-- DETALLE DE SALIDA -->
-                        <div class="row">
+                        <!-- DETALLE DE SALIDA - Se muestra/oculta según estado -->
+                        <div class="row" id="detalle_salida_group" style="display:none;">
                             <div class="col-md-12">
+                                <div class="alert alert-warning">
+                                    <h6><i class="fas fa-exclamation-triangle"></i> Importante: Complete el detalle antes de cambiar el estado</h6>
+                                </div>
                                 <div class="form-group">
-                                    <label for="detalle_salida">Detalle de la Reparación / Solución</label>
+                                    <label for="detalle_salida">
+                                        <i class="fas fa-tools"></i> Detalle de la Reparación / Diagnóstico Final 
+                                        <b id="detalle-requerido" style="display:none;">(*)</b>
+                                    </label>
                                     <textarea class="form-control" name="detalle_salida" id="detalle_salida" 
-                                              rows="4" placeholder="Describa qué se hizo para solucionar el problema, repuestos utilizados, diagnóstico final, etc.">{{$ticket->detalle_salida}}</textarea>
+                                              rows="5" placeholder="Describa detalladamente qué se hizo para reparar, repuestos utilizados, diagnóstico final, motivo de la baja, etc.">{{$ticket->detalle_salida}}</textarea>
                                     <small class="text-muted">
-                                        <i class="fas fa-tools"></i> 
-                                        Campo para uso del técnico. Detalle todos los procedimientos realizados.
+                                        <strong>Para Reparado:</strong> Indique qué se reparó, piezas cambiadas, pruebas realizadas.<br>
+                                        <strong>Para Baja:</strong> Explique por qué no es reparable (costo elevado, obsoleto, daño irreparable, etc.)
                                     </small>
                                     @error('detalle_salida')
                                     <small style="color: red">{{$message}}</small>
@@ -200,7 +214,7 @@
                                     <a href="{{url('/admin/tickets')}}" class="btn btn-secondary btn-lg">
                                         <i class="fas fa-times"></i> Cancelar
                                     </a>
-                                    <button type="submit" class="btn btn-success btn-lg">
+                                    <button type="submit" class="btn btn-success btn-lg" id="btnActualizar">
                                         <i class="fas fa-save"></i> Actualizar Ticket
                                     </button>
                                 </div>
@@ -225,20 +239,25 @@
                             </span>
                         </h4>
                         
-                        @if($ticket->fecha_salida)
+                        @if($ticket->fecha_aceptacion)
                             <small>
+                                <strong>Aceptado:</strong><br>
+                                {{$ticket->fecha_aceptacion->format('d/m/Y')}}
+                            </small>
+                        @endif
+                        
+                        @if($ticket->fecha_salida)
+                            <small class="d-block mt-2">
                                 <strong>Fecha de salida:</strong><br>
                                 {{$ticket->fecha_salida->format('d/m/Y')}}
                             </small>
                         @endif
                         
-                        @if($ticket->entregado)
+                        @if($ticket->dias_transcurridos > 0)
                             <div class="mt-2">
-                                <span class="badge badge-success">
-                                    <i class="fas fa-check"></i> Entregado
+                                <span class="badge badge-{{$ticket->dias_transcurridos > 3 ? 'danger' : 'info'}}">
+                                    {{$ticket->dias_transcurridos}} días
                                 </span>
-                                <br>
-                                <small>{{$ticket->fecha_entrega->format('d/m/Y H:i')}}</small>
                             </div>
                         @endif
                     </div>
@@ -247,14 +266,20 @@
             
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title">Estados</h3>
+                    <h3 class="card-title">Flujo de Estados</h3>
                 </div>
                 <div class="card-body p-2">
                     <small>
-                        <strong>Aceptado:</strong> Ticket recibido<br>
-                        <strong>En Reparación:</strong> Siendo trabajado<br>
-                        <strong>Reparado:</strong> Listo para entrega<br>
-                        <strong>Dado de Baja:</strong> No reparable
+                        <strong>1. En Espera</strong><br>
+                        ↓<br>
+                        <strong>2. Aceptado</strong><br>
+                        (En revisión/reparación)<br>
+                        ↓<br>
+                        <strong>3a. Reparado</strong><br>
+                        <em>o</em><br>
+                        <strong>3b. Dado de Baja</strong><br>
+                        ↓<br>
+                        <strong>4. Devuelto</strong>
                     </small>
                 </div>
             </div>
@@ -262,38 +287,101 @@
     </div>
 @stop
 
-@section('css')
-
-@stop
-
 @section('js')
     <script>
-        // Mostrar/ocultar fecha de salida según el estado
-        document.getElementById('estado').addEventListener('change', function() {
-            const fechaSalidaGroup = document.getElementById('fecha_salida_group');
+        // Función para actualizar la interfaz según el estado seleccionado
+        function actualizarInterfazEstado() {
+            const estado = document.getElementById('estado').value;
+            const detalleSalidaGroup = document.getElementById('detalle_salida_group');
+            const detalleSalidaTextarea = document.getElementById('detalle_salida');
             const fechaSalidaInput = document.getElementById('fecha_salida');
+            const badgeRequerido = document.getElementById('badge-requerido');
+            const detalleRequerido = document.getElementById('detalle-requerido');
+            const estadoTexto = document.getElementById('estado-texto');
+            const btnActualizar = document.getElementById('btnActualizar');
             
-            if (this.value === 'reparado' || this.value === 'baja') {
-                fechaSalidaGroup.style.display = 'block';
+            // Textos de ayuda según estado
+            const textos = {
+                'en_espera': 'Ticket esperando ser revisado por el técnico',
+                'aceptado': 'Ticket aceptado y en proceso de reparación',
+                'reparado': 'Equipo reparado y listo para devolución',
+                'baja': 'Equipo no reparable, será dado de baja',
+                'devuelto': 'Equipo devuelto al usuario'
+            };
+            
+            estadoTexto.textContent = textos[estado] || 'Seleccione el estado actual';
+            
+            // Mostrar/ocultar detalle de salida
+            if (estado === 'reparado' || estado === 'baja') {
+                detalleSalidaGroup.style.display = 'block';
+                badgeRequerido.style.display = 'inline';
+                detalleRequerido.style.display = 'inline';
+                
+                // Establecer fecha de salida si está vacía
                 if (!fechaSalidaInput.value) {
                     fechaSalidaInput.value = new Date().toISOString().split('T')[0];
                 }
+                
+                // Cambiar texto del botón
+                if (estado === 'reparado') {
+                    btnActualizar.innerHTML = '<i class="fas fa-check-circle"></i> Marcar como Reparado';
+                    btnActualizar.className = 'btn btn-success btn-lg';
+                } else {
+                    btnActualizar.innerHTML = '<i class="fas fa-times-circle"></i> Marcar como Dado de Baja';
+                    btnActualizar.className = 'btn btn-danger btn-lg';
+                }
+                
+                // Advertencia si el detalle está vacío
+                if (!detalleSalidaTextarea.value.trim()) {
+                    detalleSalidaTextarea.style.borderColor = '#ffc107';
+                    detalleSalidaTextarea.focus();
+                }
             } else {
-                // No ocultar el campo, pero permitir que se borre si es necesario
-                if (this.value === 'en_espera' || this.value === 'aceptado') {
-                    fechaSalidaInput.value = '';
+                detalleSalidaGroup.style.display = 'none';
+                badgeRequerido.style.display = 'none';
+                detalleRequerido.style.display = 'none';
+                detalleSalidaTextarea.style.borderColor = '';
+                
+                btnActualizar.innerHTML = '<i class="fas fa-save"></i> Actualizar Ticket';
+                btnActualizar.className = 'btn btn-success btn-lg';
+                
+                // Limpiar fecha de salida si vuelve a en_espera o aceptado
+                if (estado === 'en_espera' || estado === 'aceptado') {
+                    // No limpiar automáticamente, dejar que el usuario decida
                 }
             }
-        });
+        }
+        
+        // Evento al cambiar estado
+        document.getElementById('estado').addEventListener('change', actualizarInterfazEstado);
         
         // Ejecutar al cargar para el estado inicial
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('estado').dispatchEvent(new Event('change'));
-        });
+        document.addEventListener('DOMContentLoaded', actualizarInterfazEstado);
         
         // Convertir número de activo a mayúsculas
         document.getElementById('numero_activo').addEventListener('input', function() {
             this.value = this.value.toUpperCase();
+        });
+        
+        // Validación antes de enviar
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const estado = document.getElementById('estado').value;
+            const detalleSalida = document.getElementById('detalle_salida').value.trim();
+            
+            if ((estado === 'reparado' || estado === 'baja') && !detalleSalida) {
+                e.preventDefault();
+                alert('⚠️ Debe completar el detalle de ' + (estado === 'reparado' ? 'reparación' : 'baja') + ' antes de continuar');
+                document.getElementById('detalle_salida').focus();
+                return false;
+            }
+            
+            // Confirmación para cambios importantes
+            if (estado === 'baja') {
+                if (!confirm('¿Está seguro de marcar este equipo como DADO DE BAJA? Esta acción indica que el equipo no es reparable.')) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
         });
     </script>
 @stop

@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('tickets', function (Blueprint $table) {
@@ -29,33 +26,40 @@ return new class extends Migration
                   ->onDelete('cascade');
             
             // Datos del ticket
-            $table->string('numero_activo')->unique(); // Número de identificación del equipo
-            $table->text('descripcion_problema'); // Lo que reporta el usuario
-            $table->text('descripcion_equipo'); // Detalles específicos del equipo (ej: "Epson L355")
-            $table->text('detalle_salida')->nullable(); // Qué se hizo para repararlo
+            $table->string('numero_activo'); // YA NO ES UNIQUE - puede repetirse
+            $table->text('descripcion_problema');
+            $table->text('descripcion_equipo');
+            $table->text('detalle_salida')->nullable();
             $table->date('fecha_ingreso');
             $table->date('fecha_salida')->nullable();
             
-            // Estados del ticket actualizados
-            $table->enum('estado', ['en_espera', 'aceptado', 'reparado', 'baja', 'devuelto'])
-                  ->default('en_espera');
+            // Estados actualizados
+            $table->enum('estado', [
+                'en_espera', 
+                'aceptado', 
+                'reparado',              // Listo para devolver al usuario
+                'baja',                  // Dado de baja, va a Activos Fijos
+                'devuelto_usuario',      // Entregado al usuario (solo reparados)
+                'entregado_activos_fijos' // Entregado a Activos Fijos (solo bajas)
+            ])->default('en_espera');
             
             // Fechas para control de tiempo
-            $table->timestamp('fecha_aceptacion')->nullable(); // Cuando se acepta el ticket
-            $table->timestamp('fecha_finalizacion')->nullable(); // Cuando se marca como reparado/baja
-            $table->timestamp('fecha_devolucion')->nullable(); // Cuando se devuelve al usuario
+            $table->timestamp('fecha_aceptacion')->nullable();
+            $table->timestamp('fecha_finalizacion')->nullable();
+            $table->timestamp('fecha_devolucion_usuario')->nullable(); // Cuando va al usuario
+            $table->timestamp('fecha_entrega_activos_fijos')->nullable(); // Cuando va a Activos Fijos
             
             // Control de alertas de tiempo
-            $table->boolean('alerta_tiempo')->default(false); // Si excede 4 días
-            $table->integer('dias_transcurridos')->default(0); // Días entre aceptación y finalización
+            $table->boolean('alerta_tiempo')->default(false);
+            $table->integer('dias_transcurridos')->default(0);
             
             $table->timestamps();
+            
+            // Índice para búsqueda de historial por número de activo
+            $table->index('numero_activo');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('tickets');

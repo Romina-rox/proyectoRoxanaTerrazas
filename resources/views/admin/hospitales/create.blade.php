@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('content_header')
-    <h1><b>registro de un nuevo hospital</b></h1>
+    <h1><b> REGISTRO DE UN NUEVO CENTRO DE SALUD </b></h1>
     <hr>
 @stop
 
@@ -95,7 +95,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <a href="{{url('/admin/hospital')}}" class="btn btn-secondary">Cancelar</a>
+                                    <a href="{{url('/admin/hospitales')}}" class="btn btn-secondary">Cancelar</a>
                                     <button type="submit" class="btn btn-primary">Registrar</button>
                                 </div>
                             </div>

@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('content_header')
-    <h1><b>Personal hospitalario / Registro de un nuevo usuario</b></h1>
+    <h1><b>CREAR UN NUEVOS USUARIO</b></h1>
     <hr>
 @stop
 
@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Llene los datos del formulario</h3>
+                    <h3 class="card-title">LLENE LOS DATOS DEL FORMULARIO</h3>
                     <!-- /.card-tools -->
                 </div>
                 <!-- /.card-header -->

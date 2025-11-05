@@ -43,19 +43,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
     public function administrativo(){
         return $this->belongsTo(Administrativo::class);
     }
-
-    public function tecnico(){
-        return $this->belongsTo(Tecnico::class);
-    }
-
-    public function pasante(){
-        return $this->belongsTo(Pasante::class);
-    }
-
     public function usuario(){
         return $this->belongsTo(Usuario::class);
     }

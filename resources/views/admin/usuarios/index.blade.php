@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Usuarios registrados</h3>
+                    <h3 class="card-title">USUARIOS REGISTRADOS</h3>
 
                     <div class="card-tools">
                         <a href="{{url('/admin/usuarios/create')}}" class="btn btn-primary"> Crear nuevo</a>

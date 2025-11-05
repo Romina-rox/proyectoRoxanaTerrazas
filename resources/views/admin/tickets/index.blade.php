@@ -4,6 +4,7 @@
     <h1><b>Gestión de Tickets de Reparación</b></h1>
     <hr>
 @stop
+
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -18,20 +19,22 @@
                             </a>
                         @endif
                         @if(auth()->user()->hasAnyRole(['administrador', 'tecnico', 'pasante']))
-                            <a href="{{url('/admin/tickets-pendientes')}}" class="btn btn-warning">
-                                <i class="fas fa-clock"></i> Pendientes Devolución
+                            <a href="{{url('/admin/tickets-pendientes-usuario')}}" class="btn btn-success">
+                                <i class="fas fa-user-check"></i> Pendientes Usuario
+                            </a>
+                            <a href="{{url('/admin/tickets-pendientes-activos-fijos')}}" class="btn btn-warning">
+                                <i class="fas fa-archive"></i> Pendientes Activos Fijos
                             </a>
                             <a href="{{url('/admin/tickets-alerta-tiempo')}}" class="btn btn-danger">
-                                <i class="fas fa-exclamation-triangle"></i> Alertas de Tiempo
+                                <i class="fas fa-exclamation-triangle"></i> Alertas
                             </a>
-                            <a href="{{url('/admin/tickets-dashboard')}}" class="btn btn-info">
-                                <i class="fas fa-chart-bar"></i> Dashboard
+                            <a href="{{url('/admin/tickets-historial')}}" class="btn btn-info">
+                                <i class="fas fa-history"></i> Historial
                             </a>
                         @endif
                     </div>
                 </div>
                 <div class="card-body">
-                    {{-- Mensajes de sesión (éxito/error) --}}
                     @if (session('mensaje'))
                         <div class="alert alert-{{ session('icono') == 'success' ? 'success' : 'danger' }} alert-dismissible fade show" role="alert">
                             {{ session('mensaje') }}
@@ -41,7 +44,6 @@
                         </div>
                     @endif
 
-                    {{-- Mensaje si no hay tickets (especial para usuarios normales) --}}
                     @if(auth()->user()->hasRole('usuario') && $tickets->isEmpty())
                         <div class="alert alert-info text-center">
                             <h4><i class="fas fa-info-circle"></i> No hay tickets</h4>
@@ -55,30 +57,39 @@
                         <tr>
                             <th style="text-align: center">Ticket #</th>
                             <th style="text-align: center">Hospital</th>
-                            <th style="text-align: center">Usuario</th>
                             <th style="text-align: center">Tipo Equipo</th>
-                            <th style="text-align: center">N° Activo</th>
-                            <th style="text-align: center">Descripción</th>
+                            <th style="text-align: center">Nº Activo</th>
                             <th style="text-align: center">Fecha Ingreso</th>
                             <th style="text-align: center">Fecha Salida</th>
                             <th style="text-align: center">Estado</th>
                             <th style="text-align: center">Acciones</th>
                         </tr>
                         </thead>
+
                         <tbody>
+                            
                         @foreach($tickets as $ticket)
                             <tr>
                                 <td style="text-align: center">
-                                    <strong>{{str_pad($ticket->id, 6, '0', STR_PAD_LEFT)}}</strong>
-                                    {!! $ticket->icono_alerta !!}
+                                   <strong>{{str_pad($ticket->id, 6)}}</strong>
+                                     {!! $ticket->icono_alerta !!}
                                 </td>
-                                <td>{{$ticket->hospital->nombre ?? 'N/A'}}</td>
-                                <td>{{$ticket->usuario->nombre_completo}}</td>
-                                <td>{{$ticket->equipo->nombre}}</td>
+                               
+                                <td>
+                                    <div style="text-align: center;">
+                                        <strong>{{$ticket->hospital->nombre ?? 'N/A'}}</strong><br>
+                                        <small class="text-muted">{{$ticket->usuario->nombre_completo}}</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="text-align: center">
+                                        <strong>{{$ticket->equipo->nombre}}</strong><br>
+                                        <small class="text-muted">{{Str::limit($ticket->descripcion_equipo, 40)}}</small> 
+                                    </div>  
+                                </td>
                                 <td style="text-align: center">
                                     <span class="badge badge-secondary">{{$ticket->numero_activo}}</span>
                                 </td>
-                                <td>{{Str::limit($ticket->descripcion_equipo, 40)}}</td>
                                 <td style="text-align: center">{{$ticket->fecha_ingreso->format('d/m/Y')}}</td>
                                 <td style="text-align: center">
                                     {{$ticket->fecha_salida ? $ticket->fecha_salida->format('d/m/Y') : '-'}}
@@ -92,28 +103,38 @@
                                             <i class="fas fa-clock"></i> {{$ticket->dias_transcurridos}} días
                                         </small>
                                     @endif
-                                    @if($ticket->estado == 'devuelto')
+                                    {{-- Indicadores específicos --}}
+                                    @if($ticket->estado == 'devuelto_usuario')
                                         <br><small class="text-success">
-                                            <i class="fas fa-check"></i> Entregado
+                                            <i class="fas fa-check"></i> Reparado y Entregado
+                                        </small>
+                                    @endif
+
+                                    @if($ticket->estado == 'aceptado')
+                                        <br><small class="text-success">
+                                            <i class="fas fa-wrench"></i> en-reparacion
+                                        </small>
+                                    @endif
+
+                                    @if($ticket->estado == 'entregado_activos_fijos')
+                                        <br><small class="text-red">
+                                            <i class="fas fa-archive"></i> baja
                                         </small>
                                     @endif
                                 </td>
                                 <td style="text-align: center">
                                     <div class="btn-group" role="group">
-                                        {{-- Botón Ver detalles (siempre visible para todos) --}}
                                         <a href="{{url('/admin/tickets/'.$ticket->id)}}" 
                                            class="btn btn-info btn-sm" title="Ver detalles">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         
-                                        {{-- Para roles admin/tecnico/pasante: Editar, Aceptar, Devolver --}}
                                         @if(auth()->user()->hasAnyRole(['administrador', 'tecnico', 'pasante']))
                                             <a href="{{url('/admin/tickets/'.$ticket->id.'/edit')}}" 
                                                class="btn btn-success btn-sm" title="Editar">
                                                 <i class="fas fa-pencil-alt"></i>
                                             </a>
                                             
-                                            {{-- Botón para aceptar tickets en espera --}}
                                             @if($ticket->estado == 'en_espera')
                                                 <a href="{{url('/admin/tickets/'.$ticket->id.'/aceptar')}}" 
                                                    class="btn btn-primary btn-sm" title="Aceptar ticket"
@@ -122,34 +143,48 @@
                                                 </a>
                                             @endif
                                             
-                                            {{-- Botón para devolver (solo si reparado o baja) --}}
-                                            @if(in_array($ticket->estado, ['reparado', 'baja']) && $ticket->estado != 'devuelto')
+                                            {{-- Botón devolver AL USUARIO (solo reparados) --}}
+                                            @if($ticket->estado == 'reparado')
+                                                <button type="button" class="btn btn-success btn-sm" 
+                                                        title="Devolver al usuario"
+                                                        onclick="marcarDevueltoUsuario({{$ticket->id}}, '{{ addslashes($ticket->descripcion_equipo) }}', '{{ addslashes($ticket->usuario->nombre_completo) }}')">
+                                                    <i class="fas fa-user-check"></i>
+                                                </button>
+                                            @endif
+                                            
+                                            {{-- Botón entregar A ACTIVOS FIJOS (solo bajas) --}}
+                                            @if($ticket->estado == 'baja')
                                                 <button type="button" class="btn btn-warning btn-sm" 
-                                                        title="Marcar como devuelto"
-                                                        onclick="marcarDevuelto({{$ticket->id}}, '{{ addslashes($ticket->descripcion_equipo) }}', '{{ addslashes($ticket->usuario->nombre_completo) }}')">
-                                                    <i class="fas fa-handshake"></i>
+                                                        title="Entregar a Activos Fijos"
+                                                        onclick="marcarEntregadoActivosFijos({{$ticket->id}}, '{{ addslashes($ticket->descripcion_equipo) }}')">
+                                                    <i class="fas fa-archive"></i>
                                                 </button>
                                             @endif
                                         @endif
                                         
-                                        {{-- Para rol usuario: Solo mostrar Comprobante si devuelto --}}
-                                        @if(auth()->user()->hasRole('usuario') && $ticket->estado == 'devuelto')
-                                            <a href="{{url('/admin/tickets/'.$ticket->id.'/comprobante')}}" 
-                                               class="btn btn-primary btn-sm" title="Ver/Imprimir Comprobante" target="_blank">
-                                                <i class="fas fa-print"></i> Comprobante
-                                            </a>
-                                        @endif
-                                        
-                                        {{-- Para roles admin/tecnico/pasante: Comprobante si devuelto --}}
-                                        @if(auth()->user()->hasAnyRole(['administrador', 'tecnico', 'pasante']) && $ticket->estado == 'devuelto')
-                                            <a href="{{url('/admin/tickets/'.$ticket->id.'/comprobante')}}" 
-                                               class="btn btn-primary btn-sm" title="Ver/Imprimir Comprobante" target="_blank">
+                                        {{-- Comprobantes SEPARADOS --}}
+                                        @if(auth()->user()->hasRole('usuario') && $ticket->estado == 'devuelto_usuario')
+                                            <a href="{{url('/admin/tickets/'.$ticket->id.'/comprobante-usuario')}}" 
+                                               class="btn btn-primary btn-sm" title="Comprobante" target="_blank">
                                                 <i class="fas fa-print"></i>
                                             </a>
-                                           
                                         @endif
                                         
-                                        {{-- Eliminar solo para admin --}}
+                                        @if(auth()->user()->hasAnyRole(['administrador', 'tecnico', 'pasante']))
+                                            @if($ticket->estado == 'devuelto_usuario')
+                                                <a href="{{url('/admin/tickets/'.$ticket->id.'/comprobante-usuario')}}" 
+                                                   class="btn btn-primary btn-sm" title="Comprobante Usuario" target="_blank">
+                                                    <i class="fas fa-print"></i>
+                                                </a>
+                                            @endif
+                                            @if($ticket->estado == 'entregado_activos_fijos')
+                                                <a href="{{url('/admin/tickets/'.$ticket->id.'/comprobante-activos-fijos')}}" 
+                                                   class="btn btn-warning btn-sm" title="Comprobante A.F." target="_blank">
+                                                    <i class="fas fa-file-archive"></i>
+                                                </a>
+                                            @endif
+                                        @endif
+                                        
                                         @if(auth()->user()->hasRole('administrador'))
                                             <form action="{{url('/admin/tickets/'.$ticket->id)}}" method="post"
                                                   class="d-inline" onclick="preguntar{{$ticket->id}}(event)" 
@@ -160,31 +195,27 @@
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
+                                            <script>
+                                                function preguntar{{$ticket->id}}(event) {
+                                                    event.preventDefault();
+                                                    Swal.fire({
+                                                        title: '¿Desea eliminar este ticket?',
+                                                        text: 'Esta acción no se puede deshacer',
+                                                        icon: 'question',
+                                                        showDenyButton: true,
+                                                        confirmButtonText: 'Eliminar',
+                                                        confirmButtonColor: '#a5161d',
+                                                        denyButtonColor: '#270a0a',
+                                                        denyButtonText: 'Cancelar',
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            $('#miFormulario{{$ticket->id}}').off('submit').submit();
+                                                        }
+                                                    });
+                                                }
+                                            </script>
                                         @endif
                                     </div>
-
-                                    {{-- Script para confirmar eliminación (solo admin, por ticket) --}}
-                                    @if(auth()->user()->hasRole('administrador'))
-                                        <script>
-                                            function preguntar{{$ticket->id}}(event) {
-                                                event.preventDefault();
-                                                Swal.fire({
-                                                    title: '¿Desea eliminar este ticket?',
-                                                    text: 'Esta acción no se puede deshacer',
-                                                    icon: 'question',
-                                                    showDenyButton: true,
-                                                    confirmButtonText: 'Eliminar',
-                                                    confirmButtonColor: '#a5161d',
-                                                    denyButtonColor: '#270a0a',
-                                                    denyButtonText: 'Cancelar',
-                                                }).then((result) => {
-                                                    if (result.isConfirmed) {
-                                                        $('#miFormulario{{$ticket->id}}').off('submit').submit();
-                                                    }
-                                                });
-                                            }
-                                        </script>
-                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -196,32 +227,63 @@
         </div>
     </div>
 
-    {{-- Modal para marcar como devuelto: SOLO para roles con permiso (evita error para usuarios normales) --}}
+    {{-- MODAL DEVOLVER AL USUARIO --}}
     @if(auth()->user()->hasAnyRole(['administrador', 'tecnico', 'pasante']))
-    <div class="modal fade" id="devolucionModal" tabindex="-1" role="dialog">
+    <div class="modal fade" id="devolucionUsuarioModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form id="devolucionForm" method="POST">
+                <form id="devolucionUsuarioForm" method="POST">
                     @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title">Confirmar Devolución</h5>
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title"><i class="fas fa-user-check"></i> Devolver al Usuario</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-check-circle"></i> Equipo Reparado</h6>
+                            <p id="modal-texto-usuario">Confirmación de devolución al usuario</p>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="detalle_devolucion">Detalle adicional (opcional):</label>
+                            <textarea class="form-control" name="detalle_devolucion" id="detalle_devolucion" rows="2" placeholder="Ej: Entregado en buen estado..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Confirmar Devolución al Usuario</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- MODAL ENTREGAR A ACTIVOS FIJOS --}}
+    <div class="modal fade" id="entregaActivosFijosModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="entregaActivosFijosForm" method="POST">
+                    @csrf
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title"><i class="fas fa-archive"></i> Entregar a Activos Fijos</h5>
                         <button type="button" class="close" data-dismiss="modal">
                             <span>&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-info">
-                            <h6><i class="fas fa-info-circle"></i> Confirmación de Devolución</h6>
-                            <p id="modal-texto">¿Está seguro de marcar este equipo como devuelto al usuario?</p>
+                        <div class="alert alert-warning">
+                            <h6><i class="fas fa-exclamation-triangle"></i> Equipo Dado de Baja</h6>
+                            <p id="modal-texto-activos-fijos">Confirmación de entrega a Activos Fijos</p>
                         </div>
                         <div class="form-group mt-3">
-                            <label for="detalle_devolucion">Detalle adicional (opcional):</label>
-                            <textarea class="form-control" name="detalle_devolucion" id="detalle_devolucion" rows="2" placeholder="Ej: Entregado en buen estado, usuario capacitado..."></textarea>
+                            <label for="detalle_entrega">Observaciones (opcional):</label>
+                            <textarea class="form-control" name="detalle_entrega" id="detalle_entrega" rows="2" placeholder="Ej: Equipo obsoleto, sin reparación..."></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-success">Confirmar Devolución</button>
+                        <button type="submit" class="btn btn-warning">Confirmar Entrega a Activos Fijos</button>
                     </div>
                 </form>
             </div>
@@ -253,14 +315,10 @@
         .btn-success { background-color: #28a745; border: none; }
         .btn-info { background-color: #17a2b8; border: none; }
         .btn-warning { background-color: #ffc107; color: #212529; border: none; }
-        .btn-default { background-color: #6e7176; color: #212529; border: none; }
+        .btn-default { background-color: #6e7176; color: #fff; border: none; }
         
         .badge {
             font-size: 0.8rem;
-        }
-        
-        .text-danger {
-            color: #dc3545 !important;
         }
     </style>
 @stop
@@ -303,26 +361,31 @@
             @endif
         });
 
-        {{-- JS para modal: SOLO para roles con permiso --}}
-
-        
         @if(auth()->user()->hasAnyRole(['administrador', 'tecnico', 'pasante']))
-        function marcarDevuelto(ticketId, descripcionEquipo, nombreUsuario) {
+        function marcarDevueltoUsuario(ticketId, descripcionEquipo, nombreUsuario) {
             const numeroTicket = String(ticketId).padStart(6, '0');
-            $('#devolucionForm').attr('action', '/admin/tickets/' + ticketId + '/devuelto');
-            $('#modal-texto').html(`
-                                <p>¿Está seguro de marcar este equipo como devuelto al usuario?</p>
+            $('#devolucionUsuarioForm').attr('action', '/admin/tickets/' + ticketId + '/devuelto-usuario');
+            $('#modal-texto-usuario').html(`
                 <p><strong>Ticket:</strong> #${numeroTicket}</p>
                 <p><strong>Equipo:</strong> ${descripcionEquipo}</p>
                 <p><strong>Usuario:</strong> ${nombreUsuario}</p>
+                <p class="mb-0">Este equipo será marcado como <strong>REPARADO Y DEVUELTO AL USUARIO</strong></p>
             `);
-            // Limpiar el campo de detalle cada vez que se abre el modal
             $('#detalle_devolucion').val('');
-            $('#devolucionModal').modal('show');
+            $('#devolucionUsuarioModal').modal('show');
+        }
+
+        function marcarEntregadoActivosFijos(ticketId, descripcionEquipo) {
+            const numeroTicket = String(ticketId).padStart(6, '0');
+            $('#entregaActivosFijosForm').attr('action', '/admin/tickets/' + ticketId + '/entregado-activos-fijos');
+            $('#modal-texto-activos-fijos').html(`
+                <p><strong>Ticket:</strong> #${numeroTicket}</p>
+                <p><strong>Equipo:</strong> ${descripcionEquipo}</p>
+                <p class="mb-0">Este equipo será marcado como <strong>DADO DE BAJA Y ENTREGADO A ACTIVOS FIJOS</strong></p>
+            `);
+            $('#detalle_entrega').val('');
+            $('#entregaActivosFijosModal').modal('show');
         }
         @endif
     </script>
 @stop
-
-               
-                

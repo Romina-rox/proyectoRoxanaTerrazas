@@ -281,6 +281,7 @@ imagen del logo
             'type' => 'navbar-search',
             'text' => 'search',
             'topnav_right' => true,
+            
         ],
         [
             'type' => 'fullscreen-widget',
@@ -296,6 +297,12 @@ imagen del logo
             'url' => 'admin/blog',
             'can' => 'manage-blog',
         ],
+           [
+            'text' => 'inicio',
+            'url' => 'home',
+            'icon' => 'fas fa-fw fa-home',
+            'classes' => 'bg-blue text-white',
+        ],
         ['header' => 'account_settings'],
         [
             'text' => 'profile',
@@ -309,132 +316,8 @@ imagen del logo
             'icon' => 'fas fa-fw fa-ticket-alt',
             'classes' => 'bg-blue text-white',
         ],
-        [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
-       
-         [
-            'text' => 'hospitales',
-            'url' => 'admin/hospitales',
-            'icon' => 'fas fa-fw fa-hospital',
-            'classes' => 'bg-blue text-white',
-        ],
-         [
-            'text' => 'equipos',
-            'url' => 'admin/equipos',
-            'icon' => 'fas fa-fw fa-cogs',
-            'classes' => 'bg-blue text-white',
-        ],
-         [
-            'text' => 'historial',
-            'url' => 'admin/historiales',
-            'icon' => 'fas fa-history',
-            'classes' => 'bg-blue text-white',
-        ],
-        [
-            'text' => 'multilevel',
-            'icon' => 'fas fa-fw fa-share',
-            'submenu' => [
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                        ],
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-            ],
-        ],
-        ['header' => 'Datos'],
-
-
-        [
-            'text' => 'Roles',
-            'icon' => 'fas fa-fw fa-user-check',
-            'classes' => 'bg-blue text-white',
-            'submenu' => [
-                [
-                    'text' => 'Listado de roles',
-                    'url' => 'admin/roles',
-                    'classes' => 'bg-white text-black',
-                ],
-            ],
-        ],
-        [
-            'text' => 'Administrador',
-            'url' => 'admin/administrativos',
-            'icon' => 'fas fa-fw fa-cog',
-            'classes' => 'bg-blue text-white',
-        ],
-          [
-            'text' => 'Tecnicos',
-            'url' => 'admin/tecnicos',
-            'icon' => 'fas fa-fw fa-cog',
-            'classes' => 'bg-blue text-white',
-        ],
-          [
-            'text' => 'Pasantes',
-            'url' => 'admin/pasantes',
-            'icon' => 'fas fa-fw fa-cog',
-            'classes' => 'bg-blue text-white',
-        ],
-          [
-            'text' => 'usuarios',
-            'url' => 'admin/usuarios',
-            'icon' => 'fas fa-fw fa-users',
-            'classes' => 'bg-blue text-white',
-        ],
-
-  ['header' => 'calendario'],
-
-
-        [
-            'text' => 'calendario',
-             'url' => 'admin/eventos',
-            'icon' => 'fas fa-fw fa-user-check',
-            'classes' => 'bg-blue text-white',
-        ],
-        [
-            'text' => 'important',
-            'icon_color' => 'red',
-            'url' => '#',
-        ],
-        [
-            'text' => 'warning',
-            'icon_color' => 'yellow',
-            'url' => '#',
-        ],
-        [
-            'text' => 'information',
-            'icon_color' => 'cyan',
-            'url' => '#',
-        ],
+        
+        
     ],
 
 

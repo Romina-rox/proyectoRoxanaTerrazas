@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('content_header')
-    <h1><b>Listado de hospitales </b></h1>
+    <h1><b>LISTADO DE CENTROS DE SALUD </b></h1>
     <hr>
 @stop
 
@@ -10,7 +10,7 @@
         <div class="col-md-8">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">hospitales registrados</h3>
+                    <h3 class="card-title">CENTROS DE SALUD REGISTRADOS </h3>
 
                     <div class="card-tools">
                         <a href="{{url('/admin/hospitales/create')}}" class="btn btn-primary"> Crear nuevo</a>

@@ -34,6 +34,7 @@ class RoleSeeder extends Seeder
      Permission::create(['name'=>'admin.administrativos.create'])->syncRoles($admin);
      Permission::create(['name'=>'admin.administrativos.store'])->syncRoles($admin);
      Permission::create(['name'=>'admin.administrativos.permisos'])->syncRoles($admin);
+     Permission::create(['name'=>'admin.administrativos.show'])->syncRoles($admin);
      Permission::create(['name'=>'admin.administrativos.edit'])->syncRoles($admin);
      Permission::create(['name'=>'admin.administrativos.update'])->syncRoles($admin);
      Permission::create(['name'=>'admin.administrativos.destroy'])->syncRoles($admin);
@@ -53,30 +54,12 @@ class RoleSeeder extends Seeder
      Permission::create(['name'=>'admin.equipos.update'])->syncRoles($admin);
      Permission::create(['name'=>'admin.equipos.destroy'])->syncRoles($admin);
 
-    //tecnicos   
-     Permission::create(['name'=>'admin.tecnicos.index'])->syncRoles($admin);
-     Permission::create(['name'=>'admin.tecnicos.create'])->syncRoles($admin);
-     Permission::create(['name'=>'admin.tecnicos.store'])->syncRoles($admin);
-     Permission::create(['name'=>'admin.tecnicos.show'])->syncRoles($admin);
-     Permission::create(['name'=>'admin.tecnicos.edit'])->syncRoles($admin);
-     Permission::create(['name'=>'admin.tecnicos.update'])->syncRoles($admin);
-     Permission::create(['name'=>'admin.tecnicos.destroy'])->syncRoles($admin);
-
-    //pasantes   
-     Permission::create(['name'=>'admin.pasantes.index'])->syncRoles($admin);
-     Permission::create(['name'=>'admin.pasantes.create'])->syncRoles($admin);
-     Permission::create(['name'=>'admin.pasantes.store'])->syncRoles($admin);
-      Permission::create(['name'=>'admin.pasantes.show'])->syncRoles($admin);
-     Permission::create(['name'=>'admin.pasantes.edit'])->syncRoles($admin);
-     Permission::create(['name'=>'admin.pasantes.update'])->syncRoles($admin);
-     Permission::create(['name'=>'admin.pasantes.destroy'])->syncRoles($admin);
-
     //usuarios   
      Permission::create(['name'=>'admin.usuarios.index'])->syncRoles($admin,$tecnico,$pasante);
      Permission::create(['name'=>'admin.usuarios.create'])->syncRoles($admin,$tecnico,$pasante);
      Permission::create(['name'=>'admin.usuarios.store'])->syncRoles($admin,$tecnico,$pasante);
       Permission::create(['name'=>'admin.usuarios.show'])->syncRoles($admin,$tecnico,$pasante);
-     Permission::create(['name'=>'admin.usuarios.edit'])->syncRoles($admin);
+     Permission::create(['name'=>'admin.usuarios.edit'])->syncRoles($admin,$tecnico);
      Permission::create(['name'=>'admin.usuarios.update'])->syncRoles($admin);
      Permission::create(['name'=>'admin.usuarios.destroy'])->syncRoles($admin);
 

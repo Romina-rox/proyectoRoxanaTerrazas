@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('content_header')
-    <h1><b> ADMINISTRADOR </b></h1>
+    <h1><b> CREAR UN NUEVO PERSONAL </b></h1>
     <hr>
 @stop
 
@@ -10,33 +10,30 @@
         <div class="col-md-12">
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">DATOS DEL FORMULARIO</h3>
+                    <h3 class="card-title">LLENE LOS DATOS DEL FORMULARIO</h3>
                 </div>
                 <div class="card-body">
                     <form action="{{url('admin/administrativos/create')}}" method="post">
                         @csrf
                         <div class="row">
 
-                            <!-- ROLES -->
+                                <!-- ROLES -->
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="">Nombre del rol</label><b> (*)</b>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fas fa-user-check"></i></span>
+                                            <span class="input-group-text"><i class="fas fa-layer-group"></i></span>
                                         </div>
-                                       <select name="rol" id="" class="form-control" style="pointer-events: none">
-                                            @foreach ($roles as $rol)
-                                                @if ($rol->name=='administrador')
-                                                    <option value="{{$rol->name}}" {{$rol->name=='administrador' ? 'selected':'' }}>{{$rol->name}}</option>
-                                                @else
-                                                    <option value="">no exixte el rol administrador</option>
-                                                @endif
-                                            @endforeach
+                                       <select name="rol" id="" class="form-control">
+                                         <option value="">Seleccione un rol......</option>
+                                         @foreach ($roles as $rol)
+                                             <option value="{{$rol->name}}">{{$rol->name}}</option>
+                                         @endforeach
                                        </select>
                                     </div>
                                     @error('rol')
-                                    <small style="color: red">{{$message}}</small>
+                                        <small style="color: red">{{$message}}</small>
                                     @enderror
                                 </div>
                             </div>

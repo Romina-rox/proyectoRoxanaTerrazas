@@ -22,7 +22,8 @@ class Ticket extends Model
         'estado',
         'fecha_aceptacion',
         'fecha_finalizacion',
-        'fecha_devolucion',
+        'fecha_devolucion_usuario',      // ✅ CAMBIADO
+        'fecha_entrega_activos_fijos',   // ✅ NUEVO
         'alerta_tiempo',
         'dias_transcurridos'
     ];
@@ -32,7 +33,8 @@ class Ticket extends Model
         'fecha_salida' => 'date',
         'fecha_aceptacion' => 'datetime',
         'fecha_finalizacion' => 'datetime',
-        'fecha_devolucion' => 'datetime',
+        'fecha_devolucion_usuario' => 'datetime',      // ✅ CAMBIADO
+        'fecha_entrega_activos_fijos' => 'datetime',   // ✅ NUEVO
         'alerta_tiempo' => 'boolean'
     ];
 
@@ -73,9 +75,15 @@ class Ticket extends Model
         return $query->where('estado', 'baja');
     }
 
-    public function scopeDevueltos($query)
+    // ✅ SCOPES ACTUALIZADOS
+    public function scopeDevueltosUsuario($query)
     {
-        return $query->where('estado', 'devuelto');
+        return $query->where('estado', 'devuelto_usuario');
+    }
+
+    public function scopeEntregadosActivosFijos($query)
+    {
+        return $query->where('estado', 'entregado_activos_fijos');
     }
 
     public function scopeConAlerta($query)
@@ -84,10 +92,15 @@ class Ticket extends Model
                      ->where('estado', 'aceptado'); 
     }
 
-    public function scopePendientesDevolucion($query)
+    // ✅ SCOPES NUEVOS PARA PENDIENTES
+    public function scopePendientesDevolucionUsuario($query)
     {
-        return $query->whereIn('estado', ['reparado', 'baja'])
-                    ->where('estado', '!=', 'devuelto');
+        return $query->where('estado', 'reparado');
+    }
+
+    public function scopePendientesActivosFijos($query)
+    {
+        return $query->where('estado', 'baja');
     }
 
     // Accessors
@@ -98,7 +111,9 @@ class Ticket extends Model
             'aceptado' => 'Aceptado',
             'reparado' => 'Reparado',
             'baja' => 'Dado de Baja',
-            'devuelto' => 'Devuelto'
+            'devuelto_usuario' => 'Devuelto al Usuario',
+            'entregado_activos_fijos' => 'Entregado a Activos Fijos',
+            default => 'Estado Desconocido'
         };
     }
 
@@ -109,7 +124,9 @@ class Ticket extends Model
             'aceptado' => 'info',
             'reparado' => 'success',
             'baja' => 'danger',
-            'devuelto' => 'primary'
+            'devuelto_usuario' => 'primary',
+            'entregado_activos_fijos' => 'warning',
+            default => 'secondary'
         };
     }
 
@@ -125,7 +142,6 @@ class Ticket extends Model
 
     public function verificarAlertaTiempo()
     {
-
         if ($this->estado !== 'aceptado') {
             $this->alerta_tiempo = false;
             $this->dias_transcurridos = 0;
@@ -141,6 +157,7 @@ class Ticket extends Model
         return $this->alerta_tiempo;
     }
 
+    // ✅ MÉTODO ACTUALIZADO
     public function cambiarEstado($nuevoEstado, $detalleSalida = null)
     {
         $this->estado = $nuevoEstado;
@@ -157,21 +174,28 @@ class Ticket extends Model
                 if ($detalleSalida) {
                     $this->detalle_salida = $detalleSalida;
                 }
-                // Al finalizar, calcular días transcurridos final
                 $this->dias_transcurridos = $this->calcularDiasTranscurridos();
-                $this->alerta_tiempo = false; // Ya no está en proceso
+                $this->alerta_tiempo = false;
                 break;
                 
-            case 'devuelto':
-                $this->fecha_devolucion = now();
+            // ✅ CASOS ACTUALIZADOS
+            case 'devuelto_usuario':
+                $this->fecha_devolucion_usuario = now();
                 if ($detalleSalida) {
-                    $this->detalle_salida .= "\n[Devuelto: " . now()->format('d/m/Y H:i') . "] " . $detalleSalida;
+                    $this->detalle_salida .= "\n[Devuelto al Usuario: " . now()->format('d/m/Y H:i') . "] " . $detalleSalida;
                 }
-                $this->alerta_tiempo = false; // Ya no está en proceso
+                $this->alerta_tiempo = false;
+                break;
+
+            case 'entregado_activos_fijos':
+                $this->fecha_entrega_activos_fijos = now();
+                if ($detalleSalida) {
+                    $this->detalle_salida .= "\n[Entregado a Activos Fijos: " . now()->format('d/m/Y H:i') . "] " . $detalleSalida;
+                }
+                $this->alerta_tiempo = false;
                 break;
         }
         
-        // Verificar alerta solo si es aceptado
         if ($nuevoEstado === 'aceptado') {
             $this->verificarAlertaTiempo();
         }
@@ -179,15 +203,17 @@ class Ticket extends Model
         $this->save();
     }
 
-    // Accessors para compatibilidad con vistas
+    // ✅ ACCESSORS ACTUALIZADOS PARA COMPATIBILIDAD
     public function getEntregadoAttribute()
     {
-        return $this->estado === 'devuelto';
+        return in_array($this->estado, ['devuelto_usuario', 'entregado_activos_fijos']);
     }
 
+    // ✅ ESTE ES EL ACCESSOR CLAVE QUE NECESITAS
     public function getFechaEntregaAttribute()
     {
-        return $this->fecha_devolucion;
+        // Retorna la fecha que corresponda según el estado
+        return $this->fecha_devolucion_usuario ?? $this->fecha_entrega_activos_fijos;
     }
 
     public function getEntregadoPorAttribute()
@@ -223,10 +249,18 @@ class Ticket extends Model
         return $dias . ' día' . ($dias != 1 ? 's' : '') . ' (en proceso)';
     }
 
- 
     public function scopeUrgentes($query)
     {
         return $query->where('estado', 'aceptado')
                     ->whereRaw('DATEDIFF(NOW(), fecha_aceptacion) > 3');
+    }
+
+    // ✅ MÉTODO NUEVO PARA HISTORIAL
+    public static function historialPorActivo($numeroActivo)
+    {
+        return self::with(['usuario.hospital', 'equipo'])
+                   ->where('numero_activo', $numeroActivo)
+                   ->orderBy('created_at', 'desc')
+                   ->get();
     }
 }
