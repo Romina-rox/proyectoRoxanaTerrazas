@@ -42,12 +42,10 @@ class RoleController extends Controller
         if (stripos($permiso->name, 'hospitales') !== false) { return 'hospitales'; }
         if (stripos($permiso->name, 'equipos') !== false) { return 'equipos'; }
         if (stripos($permiso->name, 'administrativos') !== false) { return 'administrativos'; }
-        if (stripos($permiso->name, 'pasantes') !== false) { return 'pasantes'; } 
-        if (stripos($permiso->name, 'tecnicos') !== false) { return 'tecnicos'; }
         if (stripos($permiso->name, 'usuarios') !== false) { return 'usuarios'; } 
+        if (stripos($permiso->name, 'reportes') !== false) { return 'reportes'; } 
         if (stripos($permiso->name, 'tickets') !== false) { return 'tickets'; }
-        // Agrega más si hay otros módulos
-        return 'otros';  // Grupo por defecto para permisos no agrupados
+        return 'otros';
     });
     return view('admin.roles.permisos', compact('permisos', 'rol'));
 }

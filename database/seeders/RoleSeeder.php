@@ -25,11 +25,11 @@ class RoleSeeder extends Seeder
      Permission::create(['name'=>'admin.roles.create'])->syncRoles($admin);
      Permission::create(['name'=>'admin.roles.store'])->syncRoles($admin);
      Permission::create(['name'=>'admin.roles.permisos'])->syncRoles($admin);
-    Permission::create(['name'=>'admin.roles.update_permisos'])->syncRoles($admin);
+     Permission::create(['name'=>'admin.roles.update_permisos'])->syncRoles($admin);
      Permission::create(['name'=>'admin.roles.edit'])->syncRoles($admin);
      Permission::create(['name'=>'admin.roles.update'])->syncRoles($admin);
      Permission::create(['name'=>'admin.roles.destroy'])->syncRoles($admin);
-    //administrador
+    //ADMINISTRATIVOS
      Permission::create(['name'=>'admin.administrativos.index'])->syncRoles($admin);
      Permission::create(['name'=>'admin.administrativos.create'])->syncRoles($admin);
      Permission::create(['name'=>'admin.administrativos.store'])->syncRoles($admin);
@@ -45,7 +45,6 @@ class RoleSeeder extends Seeder
      Permission::create(['name'=>'admin.hospitales.edit'])->syncRoles($admin);
      Permission::create(['name'=>'admin.hospitales.update'])->syncRoles($admin);
      Permission::create(['name'=>'admin.hospitales.destroy'])->syncRoles($admin);
-
     //EQUIPOS   
      Permission::create(['name'=>'admin.equipos.index'])->syncRoles($admin);
      Permission::create(['name'=>'admin.equipos.create'])->syncRoles($admin);
@@ -54,14 +53,42 @@ class RoleSeeder extends Seeder
      Permission::create(['name'=>'admin.equipos.update'])->syncRoles($admin);
      Permission::create(['name'=>'admin.equipos.destroy'])->syncRoles($admin);
 
-    //usuarios   
+    //USUARIOS   
      Permission::create(['name'=>'admin.usuarios.index'])->syncRoles($admin,$tecnico,$pasante);
      Permission::create(['name'=>'admin.usuarios.create'])->syncRoles($admin,$tecnico,$pasante);
      Permission::create(['name'=>'admin.usuarios.store'])->syncRoles($admin,$tecnico,$pasante);
-      Permission::create(['name'=>'admin.usuarios.show'])->syncRoles($admin,$tecnico,$pasante);
+     Permission::create(['name'=>'admin.usuarios.show'])->syncRoles($admin,$tecnico,$pasante);
      Permission::create(['name'=>'admin.usuarios.edit'])->syncRoles($admin,$tecnico);
      Permission::create(['name'=>'admin.usuarios.update'])->syncRoles($admin);
      Permission::create(['name'=>'admin.usuarios.destroy'])->syncRoles($admin);
+
+    //REPORTES   
+     Permission::create(['name'=>'admin.reportes.index'])->syncRoles($admin);
+     Permission::create(['name'=>'admin.reportes.listado-bajas'])->syncRoles($admin);
+     Permission::create(['name'=>'admin.reportes.listado-devueltos'])->syncRoles($admin);
+    // TICKETS
+    Permission::create(['name' => 'admin.tickets.index'])->syncRoles($admin, $tecnico, $pasante, $usuario);
+    Permission::create(['name' => 'admin.tickets.create'])->syncRoles($admin, $usuario);
+    Permission::create(['name' => 'admin.tickets.store'])->syncRoles($admin, $usuario);
+    Permission::create(['name' => 'admin.tickets.show'])->syncRoles($admin, $tecnico, $pasante, $usuario);
+    Permission::create(['name' => 'admin.tickets.edit'])->syncRoles($admin, $tecnico, $pasante);
+    Permission::create(['name' => 'admin.tickets.update'])->syncRoles($admin, $tecnico, $pasante);
+    Permission::create(['name' => 'admin.tickets.destroy'])->syncRoles($admin);
+    
+    Permission::create(['name' => 'tickets.aceptar'])->syncRoles($admin, $tecnico);
+    Permission::create(['name' => 'tickets.devuelto.usuario'])->syncRoles($admin, $tecnico);
+    Permission::create(['name' => 'tickets.entregado.activos.fijos'])->syncRoles($admin, $tecnico);
+    
+    Permission::create(['name' => 'tickets.comprobante.usuario'])->syncRoles($admin, $tecnico, $pasante);
+    Permission::create(['name' => 'tickets.comprobante.activos.fijos'])->syncRoles($admin, $tecnico);
+    
+    Permission::create(['name' => 'tickets.pendientes.usuario'])->syncRoles($admin, $tecnico);
+    Permission::create(['name' => 'tickets.pendientes.activos.fijos'])->syncRoles($admin, $tecnico);
+    
+    Permission::create(['name' => 'tickets.alertaTiempo'])->syncRoles($admin, $tecnico);
+    
+    Permission::create(['name' => 'tickets.historial'])->syncRoles($admin, $tecnico, $pasante);
+
 
     }
 }

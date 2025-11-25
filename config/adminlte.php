@@ -53,7 +53,6 @@ return [
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
     'logo_img_alt' => 'Admin Logo',
-
     /*
 imagen del logo
     |
@@ -62,7 +61,7 @@ imagen del logo
     'auth_logo' => [
         'enabled' => false,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => 'vendor/adminlte/dist/img/ima1.gif',
             'alt' => 'Auth Logo',
             'class' => '',
             'width' => 50,
@@ -288,10 +287,7 @@ imagen del logo
             'topnav_right' => true,
         ],
         // Sidebar items:
-        [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
-        ],
+
         [
             'text' => 'blog',
             'url' => 'admin/blog',
@@ -303,21 +299,62 @@ imagen del logo
             'icon' => 'fas fa-fw fa-home',
             'classes' => 'bg-blue text-white',
         ],
-        ['header' => 'account_settings'],
-        [
-            'text' => 'profile',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-            'classes' => 'bg-blue text-white',
-        ],
-         [
-            'text' => 'tickets',
+         ['header' => 'AJUSTES'],
+         [  
+            'text' => 'TICKETS',
             'url' => 'admin/tickets',
             'icon' => 'fas fa-fw fa-ticket-alt',
             'classes' => 'bg-blue text-white',
         ],
-        
-        
+
+          ['header' => '   '],
+        [
+          
+            'text' => 'USUARIOS',
+            'icon' => 'fas fa-fw fa-user-check',
+            'classes' => 'bg-blue text-white',
+            'submenu' => [
+                [
+                    'text' => 'ADMINISTRATIVOS',
+                    'url' => 'admin/administrativos',
+                    'classes' => 'bg-white text-black',
+                      'can' => 'admin.administrativos.index', 
+
+                ],
+                 [
+                    'text' => 'USUARIOS',
+                    'url' => 'admin/usuarios',
+                    'classes' => 'bg-white text-black',
+                      'can' => 'admin.usuarios.index', 
+                ],
+            ],
+        ],
+        [
+            'text' => 'DATOS',
+            'icon' => 'fas fa-fw fa-user-check',
+            'classes' => 'bg-blue text-white',
+              'can' => 'admin.equipos.index', 
+            'submenu' => [
+                [
+                    'text' => 'EQUIPOS',
+                    'url' => 'admin/equipos',
+                    'classes' => 'bg-white text-black',
+                    'can' => 'admin.equipos.index', 
+                ],
+                [
+                    'text' => 'CENTROS DE SALUD',
+                    'url' => 'admin/hospitales',
+                    'classes' => 'bg-white text-black',
+                    'can' => 'admin.hospitales.index', 
+                ],
+                   [
+                    'text' => 'ROLES Y PERMISOS',
+                    'url' => 'admin/roles',
+                    'classes' => 'bg-white text-black',
+                    'can' => 'admin.hospitales.index', 
+                ],
+            ],
+        ],
     ],
 
 
@@ -442,7 +479,7 @@ imagen del logo
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js',
+                    'location' => '//cdnjs.jsdelivr.net/npm/Chart.js@3.8.0/dist/Chart.min.js',
                 ],
             ],
         ],

@@ -37,51 +37,39 @@
                             </a>
                         </div>
                     @else
-                        <div class="alert alert-warning">
-                            <h5><i class="fas fa-exclamation-triangle"></i> Equipos Dados de Baja</h5>
-                            <p class="mb-0">Los siguientes equipos no son reparables y deben ser entregados al Departamento de Activos Fijos para su gestión administrativa.</p>
-                        </div>
 
                         <table id="tablaPendientesActivosFijos" class="table table-bordered table-hover table-striped table-sm">
-                            <thead class="thead-dark">
+                        
                             <tr>
                                 <th style="text-align: center">Ticket #</th>
                                 <th style="text-align: center">Hospital</th>
-                                <th style="text-align: center">Usuario Solicitante</th>
                                 <th style="text-align: center">Tipo Equipo</th>
-                                <th style="text-align: center">N° Activo</th>
-                                <th style="text-align: center">Descripción</th>
+                                <th style="text-align: center">Problema Reportado</th>
                                 <th style="text-align: center">Motivo de Baja</th>
                                 <th style="text-align: center">Fecha Ingreso</th>
                                 <th style="text-align: center">Fecha Baja</th>
                                 <th style="text-align: center">Acciones</th>
                             </tr>
-                            </thead>
+                            
                             <tbody>
                             @foreach($tickets as $ticket)
                                 <tr class="table-warning-light">
                                     <td style="text-align: center">
-                                        <strong>{{str_pad($ticket->id, 6, '0', STR_PAD_LEFT)}}</strong>
+                                        <strong>{{$ticket->id}}</strong>  
                                         <br><small class="text-muted">{{$ticket->created_at->format('d/m/Y')}}</small>
                                     </td>
                                     <td>
                                         <strong>{{$ticket->usuario->hospital->nombre ?? 'N/A'}}</strong>
-                                        <br><small class="text-muted">{{$ticket->usuario->hospital->tipo ?? ''}}</small>
-                                    </td>
-                                    <td>
-                                        <strong>{{$ticket->usuario->nombre_completo}}</strong>
-                                        <br><small class="text-primary">{{ucfirst($ticket->usuario->cargo)}}</small>
+                                        <br><strong>{{$ticket->usuario->nombre_completo}}</strong>
                                         <br><small class="text-muted">{{$ticket->usuario->user->email}}</small>
-                                    </td>
+                                    </td>                   
                                     <td>
-                                        <strong>{{$ticket->equipo->nombre}}</strong>
-                                    </td>
-                                    <td style="text-align: center">
+                                        <strong>{{$ticket->equipo->nombre}}</strong> <br>
+                                         {{Str::limit($ticket->descripcion_equipo, 40)}} <br>
                                         <span class="badge badge-dark badge-lg">{{$ticket->numero_activo}}</span>
                                     </td>
                                     <td>
-                                        {{Str::limit($ticket->descripcion_equipo, 40)}}
-                                        <br><small class="text-muted"><strong>Problema:</strong> {{Str::limit($ticket->descripcion_problema, 50)}}</small>
+                                        <small class="text-muted"><strong>Problema:</strong> {{Str::limit($ticket->descripcion_problema, 50)}}</small>
                                     </td>
                                     <td>
                                         @if($ticket->detalle_salida)
@@ -114,11 +102,25 @@
                                                class="btn btn-success btn-sm mb-1" title="Editar">
                                                 <i class="fas fa-pencil-alt"></i> Editar
                                             </a>
+                                            {{-- mensaje gmail usuario baja --}}
+                                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{$ticket->usuario->user->email}}&su=Información sobre su equipo - Ticket {{$ticket->id}}&body=Estimado/a {{$ticket->usuario->nombre_completo}},%0A%0ALamentamos informarle que, tras una revisión exhaustiva, su equipo de cómputo no pudo ser reparado.%0A%0ADetalles del ticket:%0A- Número de Ticket: {{$ticket->id}}%0A- Equipo: {{$ticket->equipo->nombre}} - {{$ticket->descripcion_equipo}}%0A- Número de Activo: {{$ticket->numero_activo}}%0A- Centro de Salud: {{$ticket->usuario->hospital->nombre ?? 'N/A'}}%0A- Diagnóstico: {{$ticket->detalle_salida ?? 'Equipo no reparable'}}%0A%0ADado que no es posible su reparación, el equipo será dado de baja y entregado al Departamento de Activos Fijos para su gestión administrativa correspondiente. Esto significa que ya no estará disponible para su uso, y seguiremos los procedimientos internos para su disposición adecuada.%0A%0ASi tiene alguna pregunta o necesita más información, no dude en contactarnos. Estamos a su disposición para ayudarlo.%0A%0ACon comprensión y apoyo,%0ADepartamento de Sistemas - GAMS" 
+                                            target="_blank" 
+                                            class="btn btn-primary btn-sm mb-1 notificar-baja-btn"
+                                            data-ticket-id="{{ $ticket->id }}"
+                                            title="Notificar baja al usuario">
+                                                <i class="fas fa-envelope"></i> Mensaje
+                                            </a>
                                             
                                             <button type="button" class="btn btn-warning btn-sm" 
                                                     title="Entregar a Activos Fijos"
-                                                    onclick="marcarEntregadoActivosFijos({{$ticket->id}}, '{{ addslashes($ticket->descripcion_equipo) }}', '{{$ticket->numero_activo}}')">
-                                                <i class="fas fa-archive"></i> Entregar a A.F.
+                                                    onclick="marcarEntregadoActivosFijos(
+                                                            {{$ticket->id}}, 
+                                                            '{{ addslashes($ticket->equipo->nombre) }}',
+                                                            '{{ addslashes($ticket->descripcion_equipo) }}',
+                                                            '{{ addslashes($ticket->numero_activo) }}',
+                                                            '{{ addslashes($ticket->usuario->hospital->nombre ?? 'N/A') }}'
+                                                        )">
+                                                <i class="fas fa-archive"></i> Entregar/A.F.
                                             </button>
                                         </div>
                                     </td>
@@ -142,48 +144,41 @@
         </div>
     </div>
 
-    {{-- MODAL ENTREGAR A ACTIVOS FIJOS --}}
-    <div class="modal fade" id="entregaActivosFijosModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form id="entregaActivosFijosForm" method="POST">
-                    @csrf
-                    <div class="modal-header bg-warning text-dark">
-                        <h5 class="modal-title">
-                            <i class="fas fa-archive"></i> Confirmar Entrega a Activos Fijos
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="alert alert-warning">
-                            <h6><i class="fas fa-exclamation-triangle"></i> Equipo Dado de Baja</h6>
-                            <p id="modal-texto-activos-fijos">Confirmación de entrega</p>
+     {{-- MODAL ENTREGAR A ACTIVOS FIJOS --}}
+        <div class="modal fade" id="entregaActivosFijosModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content border border-warning shadow-sm rounded-3">
+                    <form id="entregaActivosFijosForm" method="POST">
+                        @csrf
+                        <div class="modal-header border-0 bg-light">
+                            <h5 class="modal-title text-warning">
+                                <i class="fas fa-archive me-1"></i> Entregar a Activos Fijos
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&times;</span>
+                            </button>
                         </div>
-                        <div class="alert alert-info">
-                            <small>
-                                <strong>Importante:</strong> Al confirmar, el equipo será marcado como entregado al Departamento de Activos Fijos y se generará un comprobante de entrega.
-                            </small>
+                        <div class="modal-body">
+                            <div class="alert alert-warning bg-white border border-warning text-center">
+                                <h6 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle"></i> Equipo Dado de Baja</h6>
+                                <div id="modal-texto-activos-fijos" class="text-muted small"></div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="detalle_entrega" class="text-muted">Observaciones (opcional):</label>
+                                <textarea class="form-control" name="detalle_entrega" id="detalle_entrega" rows="2" placeholder="Ej: Equipo obsoleto o sin reparación posible..."></textarea>
+                            </div>
                         </div>
-                        <div class="form-group mt-3">
-                            <label for="detalle_entrega">Observaciones adicionales (opcional):</label>
-                            <textarea class="form-control" name="detalle_entrega" id="detalle_entrega" rows="3" 
-                                      placeholder="Ej: Equipo obsoleto, sin posibilidad de reparación, daño irreparable, etc."></textarea>
+                        <div class="modal-footer border-0 justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-warning text-dark">
+                                <i class="fas fa-archive"></i> Confirmar Entrega
+                            </button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                            <i class="fas fa-times"></i> Cancelar
-                        </button>
-                        <button type="submit" class="btn btn-warning">
-                            <i class="fas fa-check"></i> Confirmar Entrega a Activos Fijos
-                        </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+
 @stop
 
 @section('css')
@@ -228,51 +223,85 @@
 
 @section('js')
     <script>
-        $(function () {
-            @if(!$tickets->isEmpty())
-            $("#tablaPendientesActivosFijos").DataTable({
-                "pageLength": 15,
-                "language": {
-                    "emptyTable": "No hay información",
-                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Equipos",
-                    "infoEmpty": "Mostrando 0 a 0 de 0 Equipos",
-                    "infoFiltered": "(Filtrado de _MAX_ total Equipos)",
-                    "lengthMenu": "Mostrar _MENU_ Equipos",
-                    "loadingRecords": "Cargando...",
-                    "processing": "Procesando...",
-                    "search": "Buscador:",
-                    "zeroRecords": "Sin resultados encontrados",
-                    "paginate": {
-                        "first": "Primero",
-                        "last": "Último",
-                        "next": "Siguiente",
-                        "previous": "Anterior"
-                    }
-                },
-                "responsive": true,
-                "lengthChange": true,
-                "autoWidth": false,
-                "order": [[ 8, "asc" ]], // Ordenar por fecha de baja (más antiguos primero)
-                buttons: [
-                    { text: '<i class="fas fa-file-pdf"></i> PDF', extend: 'pdf', className: 'btn btn-danger' },
-                    { text: '<i class="fas fa-file-excel"></i> EXCEL', extend: 'excel', className: 'btn btn-success' },
-                    { text: '<i class="fas fa-print"></i> IMPRIMIR', extend: 'print', className: 'btn btn-info' }
-                ]
-            }).buttons().container().appendTo('#tablaPendientesActivosFijos_wrapper .row:eq(0)');
-            @endif
+    $(function () {
+        @if(!$tickets->isEmpty())
+        $("#tablaPendientesActivosFijos").DataTable({
+            "pageLength": 15,
+            "language": {
+                "emptyTable": "No hay información",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ Equipos",
+                "infoEmpty": "Mostrando 0 a 0 de 0 Equipos",
+                "infoFiltered": "(Filtrado de _MAX_ total Equipos)",
+                "lengthMenu": "Mostrar _MENU_ Equipos",
+                "loadingRecords": "Cargando...",
+                "processing": "Procesando...",
+                "search": "Buscador:",
+                "zeroRecords": "Sin resultados encontrados",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                }
+            },
+            "responsive": true,
+            "lengthChange": true,
+            "autoWidth": false,
+            "order": [[ 8, "asc" ]], // Ordenar por fecha de baja (más antiguos primero)
+            buttons: [
+                { text: '<i class="fas fa-file-pdf"></i> PDF', extend: 'pdf', className: 'btn btn-danger' },
+                { text: '<i class="fas fa-file-excel"></i> EXCEL', extend: 'excel', className: 'btn btn-success' },
+                { text: '<i class="fas fa-print"></i> IMPRIMIR', extend: 'print', className: 'btn btn-info' }
+            ]
+        }).buttons().container().appendTo('#tablaPendientesActivosFijos_wrapper .row:eq(0)');
+        @endif
+    });
+
+    function marcarEntregadoActivosFijos(ticketId, tipoEquipo, descripcionEquipo, numeroActivo, nombreHospital) {
+        $('#entregaActivosFijosForm').attr('action', '/admin/tickets/' + ticketId + '/entregado-activos-fijos');
+        $('#modal-texto-activos-fijos').html(`
+            <p><strong>Ticket:</strong> #${ticketId}</p>
+            <p><strong>Equipo:</strong> ${tipoEquipo} - ${descripcionEquipo}</p>
+            <p><strong>N° Activo:</strong> ${numeroActivo}</p>
+            <p><strong>Centro Salud:</strong> ${nombreHospital}</p>
+            <p class="mb-0 text-danger"><strong>Este equipo dado de baja será entregado al Departamento de Activos Fijos</strong></p>
+        `);
+        $('#detalle_entrega').val('');
+        $('#entregaActivosFijosModal').modal('show');
+    }
+
+    $(document).ready(function() {
+        // Verificar notificaciones de BAJA guardadas al cargar la página
+        $('.notificar-baja-btn').each(function() {
+            const ticketId = $(this).data('ticket-id');
+            if (localStorage.getItem('notificado_baja_' + ticketId)) {
+                $(this).replaceWith(`
+                    <button class="btn btn-success btn-sm mb-1" title="Baja notificada al usuario">
+                        <i class="fas fa-check-circle"></i> Notificado
+                    </button>
+                `);
+            }
         });
 
-        function marcarEntregadoActivosFijos(ticketId, descripcionEquipo, numeroActivo) {
-            const numeroTicket = String(ticketId).padStart(6, '0');
-            $('#entregaActivosFijosForm').attr('action', '/admin/tickets/' + ticketId + '/entregado-activos-fijos');
-            $('#modal-texto-activos-fijos').html(`
-                <p><strong>Ticket:</strong> #${numeroTicket}</p>
-                <p><strong>N° Activo:</strong> ${numeroActivo}</p>
-                <p><strong>Equipo:</strong> ${descripcionEquipo}</p>
-                <p class="mb-0 text-danger"><strong>Este equipo dado de baja será entregado al Departamento de Activos Fijos</strong></p>
-            `);
-            $('#detalle_entrega').val('');
-            $('#entregaActivosFijosModal').modal('show');
-        }
-    </script>
+        // Marcar como notificado BAJA cuando se hace clic
+        $(document).on('click', '.notificar-baja-btn', function(e) {
+            const ticketId = $(this).data('ticket-id');
+            const btn = $(this);
+            
+            console.log('Marcando ticket ' + ticketId + ' como notificado (baja)');
+            
+            // Guardar en localStorage inmediatamente con clave diferente
+            localStorage.setItem('notificado_baja_' + ticketId, 'true');
+            
+            // Cambiar el botón después de un breve delay (1 segundo)
+            setTimeout(() => {
+                btn.replaceWith(`
+                    <button class="btn btn-success btn-sm mb-1" title="Baja notificada al usuario">
+                        <i class="fas fa-check-circle"></i> Notificado
+                    </button>
+                `);
+            }, 1000);
+        });
+    });
+</script>
 @stop

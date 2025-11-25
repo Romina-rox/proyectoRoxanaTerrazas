@@ -13,25 +13,35 @@
                     <h3 class="card-title">Tickets registrados</h3>
 
                     <div class="card-tools">
-                        @if(auth()->user()->hasRole('usuario'))
+                        @can('admin.tickets.create')
                             <a href="{{url('/admin/tickets/create')}}" class="btn btn-primary">
                                 <i class="fas fa-plus"></i> Nuevo Ticket
                             </a>
-                        @endif
-                        @if(auth()->user()->hasAnyRole(['administrador', 'tecnico', 'pasante']))
+                        @endcan
+                       
+                        @can('tickets.pendientes.usuario')
                             <a href="{{url('/admin/tickets-pendientes-usuario')}}" class="btn btn-success">
                                 <i class="fas fa-user-check"></i> Pendientes Usuario
                             </a>
+                        @endcan 
+
+                         @can('tickets.pendientes.activos.fijos')
                             <a href="{{url('/admin/tickets-pendientes-activos-fijos')}}" class="btn btn-warning">
                                 <i class="fas fa-archive"></i> Pendientes Activos Fijos
                             </a>
+                        @endcan 
+
+                        @can('tickets.alertaTiempo')   
                             <a href="{{url('/admin/tickets-alerta-tiempo')}}" class="btn btn-danger">
                                 <i class="fas fa-exclamation-triangle"></i> Alertas
                             </a>
+                        @endcan 
+
+                        @can('tickets.historial')
                             <a href="{{url('/admin/tickets-historial')}}" class="btn btn-info">
                                 <i class="fas fa-history"></i> Historial
                             </a>
-                        @endif
+                        @endcan 
                     </div>
                 </div>
                 <div class="card-body">
@@ -44,12 +54,14 @@
                         </div>
                     @endif
 
-                    @if(auth()->user()->hasRole('usuario') && $tickets->isEmpty())
-                        <div class="alert alert-info text-center">
-                            <h4><i class="fas fa-info-circle"></i> No hay tickets</h4>
-                            <p>No has registrado ningún ticket aún. <a href="{{url('/admin/tickets/create')}}">Crea uno ahora</a> para reportar un equipo con problemas.</p>
-                        </div>
-                    @endif
+                    @can('admin.tickets.create')
+                        @if($tickets->isEmpty())
+                            <div class="alert alert-info text-center">
+                                <h4><i class="fas fa-info-circle"></i> No hay tickets</h4>
+                                <p>No has registrado ningún ticket aún. <a href="{{url('/admin/tickets/create')}}">Crea uno ahora</a> para reportar un equipo con problemas.</p>
+                            </div>
+                        @endif
+                    @endcan
 
                     @if(!$tickets->isEmpty())
                     <table id="example1" class="table table-bordered table-hover table-striped table-sm">
@@ -57,8 +69,7 @@
                         <tr>
                             <th style="text-align: center">Ticket #</th>
                             <th style="text-align: center">Hospital</th>
-                            <th style="text-align: center">Tipo Equipo</th>
-                            <th style="text-align: center">Nº Activo</th>
+                            <th style="text-align: center">Equipo</th>
                             <th style="text-align: center">Fecha Ingreso</th>
                             <th style="text-align: center">Fecha Salida</th>
                             <th style="text-align: center">Estado</th>
@@ -84,11 +95,9 @@
                                 <td>
                                     <div style="text-align: center">
                                         <strong>{{$ticket->equipo->nombre}}</strong><br>
-                                        <small class="text-muted">{{Str::limit($ticket->descripcion_equipo, 40)}}</small> 
+                                        <small class="text-muted">{{Str::limit($ticket->descripcion_equipo, 40)}}</small> <br>
+                                        <span class="badge badge-secondary">{{$ticket->numero_activo}}</span>
                                     </div>  
-                                </td>
-                                <td style="text-align: center">
-                                    <span class="badge badge-secondary">{{$ticket->numero_activo}}</span>
                                 </td>
                                 <td style="text-align: center">{{$ticket->fecha_ingreso->format('d/m/Y')}}</td>
                                 <td style="text-align: center">
@@ -135,7 +144,7 @@
                                                 <i class="fas fa-pencil-alt"></i>
                                             </a>
                                             
-                                            @if($ticket->estado == 'en_espera')
+                                          @if($ticket->estado == 'en_espera')
                                                 <a href="{{url('/admin/tickets/'.$ticket->id.'/aceptar')}}" 
                                                    class="btn btn-primary btn-sm" title="Aceptar ticket"
                                                    onclick="return confirm('¿Está seguro de aceptar este ticket?')">
@@ -143,20 +152,33 @@
                                                 </a>
                                             @endif
                                             
-                                            {{-- Botón devolver AL USUARIO (solo reparados) --}}
+                                           {{-- Botón devolver AL USUARIO (solo reparados) --}}
                                             @if($ticket->estado == 'reparado')
                                                 <button type="button" class="btn btn-success btn-sm" 
                                                         title="Devolver al usuario"
-                                                        onclick="marcarDevueltoUsuario({{$ticket->id}}, '{{ addslashes($ticket->descripcion_equipo) }}', '{{ addslashes($ticket->usuario->nombre_completo) }}')">
+                                                        onclick="marcarDevueltoUsuario(
+                                                            {{$ticket->id}}, 
+                                                            '{{ addslashes($ticket->equipo->nombre) }}',
+                                                            '{{ addslashes($ticket->descripcion_equipo) }}', 
+                                                            '{{ addslashes($ticket->numero_activo) }}',
+                                                            '{{ addslashes($ticket->hospital->nombre ?? 'N/A') }}',
+                                                            '{{ addslashes($ticket->usuario->nombre_completo) }}'
+                                                        )">
                                                     <i class="fas fa-user-check"></i>
                                                 </button>
                                             @endif
-                                            
+
                                             {{-- Botón entregar A ACTIVOS FIJOS (solo bajas) --}}
                                             @if($ticket->estado == 'baja')
                                                 <button type="button" class="btn btn-warning btn-sm" 
                                                         title="Entregar a Activos Fijos"
-                                                        onclick="marcarEntregadoActivosFijos({{$ticket->id}}, '{{ addslashes($ticket->descripcion_equipo) }}')">
+                                                        onclick="marcarEntregadoActivosFijos(
+                                                            {{$ticket->id}}, 
+                                                            '{{ addslashes($ticket->equipo->nombre) }}',
+                                                            '{{ addslashes($ticket->descripcion_equipo) }}',
+                                                            '{{ addslashes($ticket->numero_activo) }}',
+                                                            '{{ addslashes($ticket->hospital->nombre ?? 'N/A') }}'
+                                                        )">
                                                     <i class="fas fa-archive"></i>
                                                 </button>
                                             @endif
@@ -227,68 +249,79 @@
         </div>
     </div>
 
-    {{-- MODAL DEVOLVER AL USUARIO --}}
+    
     @if(auth()->user()->hasAnyRole(['administrador', 'tecnico', 'pasante']))
-    <div class="modal fade" id="devolucionUsuarioModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form id="devolucionUsuarioForm" method="POST">
-                    @csrf
-                    <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title"><i class="fas fa-user-check"></i> Devolver al Usuario</h5>
-                        <button type="button" class="close text-white" data-dismiss="modal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="alert alert-success">
-                            <h6><i class="fas fa-check-circle"></i> Equipo Reparado</h6>
-                            <p id="modal-texto-usuario">Confirmación de devolución al usuario</p>
-                        </div>
-                        <div class="form-group mt-3">
-                            <label for="detalle_devolucion">Detalle adicional (opcional):</label>
-                            <textarea class="form-control" name="detalle_devolucion" id="detalle_devolucion" rows="2" placeholder="Ej: Entregado en buen estado..."></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-success">Confirmar Devolución al Usuario</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+        
 
-    {{-- MODAL ENTREGAR A ACTIVOS FIJOS --}}
-    <div class="modal fade" id="entregaActivosFijosModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form id="entregaActivosFijosForm" method="POST">
-                    @csrf
-                    <div class="modal-header bg-warning text-dark">
-                        <h5 class="modal-title"><i class="fas fa-archive"></i> Entregar a Activos Fijos</h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="alert alert-warning">
-                            <h6><i class="fas fa-exclamation-triangle"></i> Equipo Dado de Baja</h6>
-                            <p id="modal-texto-activos-fijos">Confirmación de entrega a Activos Fijos</p>
+      {{-- MODAL DEVOLVER AL USUARIO --}}
+        <div class="modal fade" id="devolucionUsuarioModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content border border-success shadow-sm rounded-3">
+                    <form id="devolucionUsuarioForm" method="POST">
+                        @csrf
+                        <div class="modal-header border-0 bg-light">
+                            <h5 class="modal-title text-success">
+                                <i class="fas fa-user-check me-1"></i> Devolver al Usuario
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&times;</span>
+                            </button>
                         </div>
-                        <div class="form-group mt-3">
-                            <label for="detalle_entrega">Observaciones (opcional):</label>
-                            <textarea class="form-control" name="detalle_entrega" id="detalle_entrega" rows="2" placeholder="Ej: Equipo obsoleto, sin reparación..."></textarea>
+                        <div class="modal-body">
+                            <div class="alert alert-success bg-white border border-success text-center">
+                                <h6 class="fw-bold mb-2"><i class="fas fa-check-circle"></i> Equipo Reparado</h6>
+                                <div id="modal-texto-usuario" class="text-muted small"></div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="detalle_devolucion" class="text-muted">Detalle adicional (opcional):</label>
+                                <textarea class="form-control" name="detalle_devolucion" id="detalle_devolucion" rows="2" placeholder="Ej: Entregado en buenas condiciones..."></textarea>
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-warning">Confirmar Entrega a Activos Fijos</button>
-                    </div>
-                </form>
+                        <div class="modal-footer border-0 justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check"></i> Confirmar Devolución
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+
+        {{-- MODAL ENTREGAR A ACTIVOS FIJOS --}}
+        <div class="modal fade" id="entregaActivosFijosModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content border border-warning shadow-sm rounded-3">
+                    <form id="entregaActivosFijosForm" method="POST">
+                        @csrf
+                        <div class="modal-header border-0 bg-light">
+                            <h5 class="modal-title text-warning">
+                                <i class="fas fa-archive me-1"></i> Entregar a Activos Fijos
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-warning bg-white border border-warning text-center">
+                                <h6 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle"></i> Equipo Dado de Baja</h6>
+                                <div id="modal-texto-activos-fijos" class="text-muted small"></div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="detalle_entrega" class="text-muted">Observaciones (opcional):</label>
+                                <textarea class="form-control" name="detalle_entrega" id="detalle_entrega" rows="2" placeholder="Ej: Equipo obsoleto o sin reparación posible..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-warning text-dark">
+                                <i class="fas fa-archive"></i> Confirmar Entrega
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     @endif
 @stop
 
@@ -320,8 +353,47 @@
         .badge {
             font-size: 0.8rem;
         }
+
+        .modal-content {
+        border-radius: 10px !important;
+        transition: all 0.3s ease;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #eee !important;
+        }
+
+        .modal-body p, 
+        .modal-body label {
+            font-size: 0.95rem;
+        }
+
+        .modal-body .alert {
+            border-radius: 10px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #eee !important;
+        }
+
+        .modal .btn {
+            font-weight: 600;
+            border-radius: 6px;
+        }
+
+        .modal .btn-outline-secondary:hover {
+            background-color: #e9ecef;
+        }
+
+        .modal .text-muted {
+            color: #454749 !important;
+        }
+        .modal-title i {
+            margin-right: 6px;
+        }
     </style>
 @stop
+
 
 @section('js')
     <script>
@@ -361,13 +433,15 @@
             @endif
         });
 
-        @if(auth()->user()->hasAnyRole(['administrador', 'tecnico', 'pasante']))
-        function marcarDevueltoUsuario(ticketId, descripcionEquipo, nombreUsuario) {
-            const numeroTicket = String(ticketId).padStart(6, '0');
+     @if(auth()->user()->hasAnyRole(['administrador', 'tecnico', 'pasante']))
+        function marcarDevueltoUsuario(ticketId, tipoEquipo, descripcionEquipo, numeroActivo, nombreHospital, nombreUsuario) {
+            const numeroTicket = String(ticketId).padStart(6);
             $('#devolucionUsuarioForm').attr('action', '/admin/tickets/' + ticketId + '/devuelto-usuario');
             $('#modal-texto-usuario').html(`
                 <p><strong>Ticket:</strong> #${numeroTicket}</p>
-                <p><strong>Equipo:</strong> ${descripcionEquipo}</p>
+                <p><strong>Equipo:</strong> ${tipoEquipo} - ${descripcionEquipo}</p>
+                <p><strong>Nº Activo:</strong> ${numeroActivo}</p>
+                <p><strong>Centro Salud:</strong> ${nombreHospital}</p>
                 <p><strong>Usuario:</strong> ${nombreUsuario}</p>
                 <p class="mb-0">Este equipo será marcado como <strong>REPARADO Y DEVUELTO AL USUARIO</strong></p>
             `);
@@ -375,17 +449,19 @@
             $('#devolucionUsuarioModal').modal('show');
         }
 
-        function marcarEntregadoActivosFijos(ticketId, descripcionEquipo) {
-            const numeroTicket = String(ticketId).padStart(6, '0');
+        function marcarEntregadoActivosFijos(ticketId, tipoEquipo, descripcionEquipo, numeroActivo, nombreHospital) {
+            const numeroTicket = String(ticketId).padStart(6);
             $('#entregaActivosFijosForm').attr('action', '/admin/tickets/' + ticketId + '/entregado-activos-fijos');
             $('#modal-texto-activos-fijos').html(`
                 <p><strong>Ticket:</strong> #${numeroTicket}</p>
-                <p><strong>Equipo:</strong> ${descripcionEquipo}</p>
+                <p><strong>Equipo:</strong> ${tipoEquipo} - ${descripcionEquipo}</p>
+                <p><strong>Nº Activo:</strong> ${numeroActivo}</p>
+                <p><strong>Centro Salud:</strong> ${nombreHospital}</p>
                 <p class="mb-0">Este equipo será marcado como <strong>DADO DE BAJA Y ENTREGADO A ACTIVOS FIJOS</strong></p>
             `);
             $('#detalle_entrega').val('');
             $('#entregaActivosFijosModal').modal('show');
         }
-        @endif
+     @endif
     </script>
 @stop

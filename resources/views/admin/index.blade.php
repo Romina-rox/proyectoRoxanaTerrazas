@@ -15,10 +15,8 @@
 @section('content')
 <div class="container-fluid">
     <div class="row g-4">
-
-        @if(auth()->user()->hasAnyRole(['administrador']))
-
-            <!-- Hospitales -->
+<!-- Hospitales -->
+            @can('admin.hospitales.index')
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
                 <div class="card dashboard-card bg-gradient-info text-white">
                     <div class="card-body position-relative">
@@ -35,8 +33,9 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Administrativos -->
+            @endcan
+ <!-- Administrativos -->
+             @can('admin.administrativos.index')
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
                 <div class="card dashboard-card bg-gradient-success text-white">
                     <div class="card-body position-relative">
@@ -53,8 +52,9 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Roles -->
+              @endcan
+<!-- Roles -->
+              @can('admin.roles.index')
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
                 <div class="card dashboard-card bg-gradient-warning text-dark">
                     <div class="card-body position-relative">
@@ -71,8 +71,9 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Equipos -->
+             @endcan
+<!-- Equipos -->
+             @can('admin.equipos.index')
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
                 <div class="card dashboard-card bg-gradient-primary text-white">
                     <div class="card-body position-relative">
@@ -89,9 +90,9 @@
                     </div>
                 </div>
             </div>
-        @endif
-
-        <!-- Usuarios -->
+            @endcan
+<!-- Usuarios -->
+         @can('admin.usuarios.index')
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
             <div class="card dashboard-card bg-gradient-cyan text-white">
                 <div class="card-body position-relative">
@@ -108,25 +109,26 @@
                 </div>
             </div>
         </div>
-
-        <!-- Reportes -->
-        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-            <div class="card dashboard-card bg-gradient-danger text-white">
-                <div class="card-body position-relative">
-                    <div class="card-bg-icon">
-                        <i class="fas fa-file-alt"></i>
+        @endcan
+<!-- reportes -->
+           @can('admin.reportes.index')
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                <div class="card dashboard-card bg-gradient-danger text-white">
+                    <div class="card-body position-relative">
+                        <div class="card-bg-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h5 class="fw-bold mb-1 text-uppercase">Reportes</h5>
+                        <p class="mb-0 fs-6">.</p>
                     </div>
-                    <h5 class="fw-bold mb-1 text-uppercase">Reportes</h5>
-                    <p class="mb-0 fs-6">0 generados</p>
-                </div>
-                <div class="card-footer card-footer-modern footer-danger text-white">
-                    <a href="#" class="text-white text-decoration-none fw-semibold">
-                        Más información <i class="fas fa-arrow-circle-right"></i>
-                    </a>
+                    <div class="card-footer card-footer-modern footer-danger text-white">
+                    <a href="{{ route('admin.reportes.index') }}" class="text-white text-decoration-none fw-semibold">
+                            Más información <i class="fas fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-
+            @endcan 
     </div>
 </div>
 @stop
@@ -207,6 +209,7 @@
 
 @section('js')
 <script>
-    console.log("Dashboard de Servicio Técnico con fondos visuales actualizado");
+    console.log("Hi, I'm using the Laravel-AdminLTE package!");
 </script>
 @stop
+

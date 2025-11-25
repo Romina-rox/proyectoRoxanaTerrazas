@@ -141,12 +141,10 @@
                         <tr>
                             <th style="text-align: center">ticket#</th>
                             <th style="text-align: center">Fecha Ingreso</th>
-                            <th style="text-align: center">N° Activo</th>
-                            <th style="text-align: center">Hospital</th>
-                            
                             <th style="text-align: center">Equipo</th>
+                            <th style="text-align: center">Hospital</th>
                             <th style="text-align: center">Problema</th>
-                            <th style="text-align: center">Solución/Detalle</th>
+                            <th style="text-align: center">Detalle</th>
                             <th style="text-align: center">Estado</th>
                             <th style="text-align: center">Días</th>
                         </tr>
@@ -164,16 +162,13 @@
                                     <br><small class="text-muted">{{$ticket->created_at->format('H:i')}}</small>
                                 </td>
                                 <td style="text-align: center">
+                                    <strong>{{$ticket->equipo->nombre}}</strong> 
+                                    <br><small>{{Str::limit($ticket->descripcion_equipo, 30)}}</small> <br>
                                     <span class="badge badge-secondary badge-lg">{{$ticket->numero_activo}}</span>
                                 </td>
                                 <td>
                                     <strong>{{$ticket->hospital->nombre}}</strong>
                                     <br><small class="text-muted">{{$ticket->usuario->nombre_completo}}</small>
-                                </td>
-                                
-                                <td>
-                                    <strong>{{$ticket->equipo->nombre}}</strong>
-                                    <br><small>{{Str::limit($ticket->descripcion_equipo, 30)}}</small>
                                 </td>
                                 <td>
                                     {{Str::limit($ticket->descripcion_problema, 50)}}
