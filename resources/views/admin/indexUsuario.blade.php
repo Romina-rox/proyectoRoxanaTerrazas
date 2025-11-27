@@ -30,7 +30,7 @@
             </div>
 
             <div class="carousel-item">
-                <img src="{{ asset('img/principal/img2.jpg') }}" class="d-block w-100 carousel-img" alt="Servicio Técnico 2">
+                <img src="{{ asset('img/principal/img2.png') }}" class="d-block w-100 carousel-img" alt="Servicio Técnico 2">
                 <div class="carousel-caption d-none d-md-block">
                     <div class="caption-content">
                         <h5>Reparación Rápida</h5>
@@ -40,7 +40,7 @@
             </div>
 
             <div class="carousel-item">
-                <img src="{{ asset('img/principal/img3.jpg') }}" class="d-block w-100 carousel-img" alt="Servicio Técnico 3">
+                <img src="{{ asset('img/principal/img3.png') }}" class="d-block w-100 carousel-img" alt="Servicio Técnico 3">
                 <div class="carousel-caption d-none d-md-block">
                     <div class="caption-content">
                         <h5>Compromiso y Calidad</h5>
@@ -66,7 +66,7 @@
         <div class="col-12 text-center" data-aos="fade-up">
             <h2 class="section-title">Bienvenido al Servicio Técnico</h2>
             <p class="lead text-muted px-md-5">
-                Somos el equipo especializado en mantener y reparar los equipos médicos de 23 centros de salud dependientes de GAMS.
+                Somos el equipo especializado en mantener y reparar los equipos médicos de 24 centros de salud dependientes de GAMS.
             </p>
         </div>
     </div>
@@ -100,17 +100,16 @@
         <div class="col-md-6 order-md-2 mb-4 mb-md-0">
             <h3 class="section-subtitle">¿Qué hacemos?</h3>
             <p class="text-justify">
-                Brindamos servicios integrales de mantenimiento preventivo y correctivo para equipos médicos. 
-                Desde pequeños instrumentos hasta equipos de alta complejidad como resonadores magnéticos y tomógrafos.
+                Brindamos servicios integrales de mantenimiento  correctivo para equipos de computo de los centros de salud tanto en area administrativa, operativos. 
+                
             </p>
             <p class="text-justify">
-                Realizamos inspecciones periódicas, calibraciones, actualizaciones de software y reparaciones de emergencia. 
-                Nuestro objetivo es minimizar el tiempo de inactividad de los equipos para garantizar la continuidad de la atención médica.
+                Ofrecemos servicio técnico especializado en la reparación de impresoras, teclados, monitores, laptops y unidades de escritorio (CPU)
             </p>
             <div class="services-grid mt-4">
                 <div class="service-item">
                     <i class="fas fa-tools text-primary"></i>
-                    <span>Mantenimiento Preventivo</span>
+                    <span>Revision de equipos </span>
                 </div>
                 <div class="service-item">
                     <i class="fas fa-wrench text-primary"></i>
@@ -136,15 +135,15 @@
         <div class="col-md-6 mb-4 mb-md-0">
             <h3 class="section-subtitle">Ubicación</h3>
             <p class="text-justify">
-                Nos encontramos dentro del Hospital México, en el segundo piso del edificio central, cerca del área de emergencia. 
+                Nos encontramos dentro de las Instalaciones del Hospital México, en el segundo piso del edificio central, cerca del área de emergencia. 
                 Nuestra ubicación estratégica nos permite responder rápidamente a cualquier solicitud de soporte técnico.
             </p>
             <p class="text-justify mb-3">
-                <strong>Dirección:</strong> Hospital México, San José, Costa Rica.<br>
-                <strong>Horario:</strong> Lunes a Viernes de 7:00 AM a 5:00 PM<br>
+                <strong>Dirección:</strong> Hospital México, Sacaba, Cbba.<br>
+                <strong>Horario:</strong> Lunes a Viernes de 8:00 AM a 6:00 PM<br>
                 <strong>Emergencias:</strong> Disponible 24/7
             </p>
-            <a href="tel:+50612345678" class="btn btn-primary mb-2 mr-2">
+            <a href="tel:+51971443900" class="btn btn-primary mb-2 mr-2">
                 <i class="fas fa-phone"></i> Llamar ahora
             </a>
             <a href="mailto:servicio.tecnico@gams.com" class="btn btn-outline-primary mb-2">
@@ -152,7 +151,7 @@
             </a>
         </div>
         <div class="col-md-6">
-            <img src="{{ asset('img/principal/img2.jpg') }}" class="img-fluid rounded shadow standard-img" alt="Ubicación">
+            <img src="{{ asset('img/principal/img2.png') }}" class="img-fluid rounded shadow standard-img" alt="Ubicación">
         </div>
     </div>
 
@@ -164,7 +163,7 @@
                 Estamos comprometidos con la excelencia en el servicio, la seguridad del paciente y la satisfacción de nuestros clientes. 
                 Cada intervención que realizamos está respaldada por protocolos rigurosos de calidad y un equipo que trabaja con pasión y dedicación.
             </p>
-            <img src="{{ asset('img/principal/img3.jpg') }}" class="img-fluid rounded shadow standard-img-large" alt="Compromiso">
+            <img src="{{ asset('img/principal/img3.png') }}" class="img-fluid rounded shadow standard-img-large" alt="Compromiso">
         </div>
     </div>
 

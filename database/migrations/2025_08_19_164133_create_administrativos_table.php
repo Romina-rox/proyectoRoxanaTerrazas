@@ -17,7 +17,7 @@ return new class extends Migration
         
             $table->string('nombres');
             $table->string('apellidos');
-            $table->string('ci')->unique();
+             $table->text('ci')->change(); 
             $table->date('fecha_nacimiento');
             $table->string('telefono');
             $table->string('direccion');
@@ -32,6 +32,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('administrativos');
+        Schema::table('administrativos', function (Blueprint $table) {
+            $table->string('ci', 1000)->change();
+        });
     }
 };

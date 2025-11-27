@@ -30,7 +30,6 @@
                             <th style="text-align: center">Hospital</th>
                             <th style="text-align: center">Teléfono</th>
                             <th style="text-align: center">Correo</th>
-                            <th style="text-align: center">Especialidad</th>
                             <th style="text-align: center">Acción</th>
                         </tr>
                         </thead>
@@ -48,7 +47,6 @@
                                 <td>{{ $usuario->hospital->nombre ?? 'Sin hospital' }}</td>
                                 <td>{{ $usuario->telefono }}</td>
                                 <td>{{ $usuario->user->email ?? 'Sin correo' }}</td>
-                                <td>{{ $usuario->especialidad ?? 'N/A' }}</td>
                                 <td style="text-align: center">
                                     <div class="btn-group" role="group" aria-label="Basic example">
                                         <a href="{{url('/admin/usuarios/'.$usuario->id)}}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>

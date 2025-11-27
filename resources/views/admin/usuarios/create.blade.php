@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('content_header')
-    <h1><b>CREAR UN NUEVOS USUARIO</b></h1>
+    <h1><b>CREAR UN NUEVO USUARIO</b></h1>
     <hr>
 @stop
 
@@ -11,14 +11,12 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <h3 class="card-title">LLENE LOS DATOS DEL FORMULARIO</h3>
-                    <!-- /.card-tools -->
                 </div>
-                <!-- /.card-header -->
                 <div class="card-body">
                     <form action="{{url('admin/usuarios/create')}}" method="post">
                         @csrf
                         <div class="row">
-                            <!-- ROLES -->
+                            <!-- ROLES (CAMPO OCULTO) -->
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="">Nombre del rol</label><b> (*)</b>
@@ -26,15 +24,11 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-user-check"></i></span>
                                         </div>
-                                       <select name="rol" id="" class="form-control" style="pointer-events: none">
-                                            @foreach ($roles as $rol)
-                                                @if ($rol->name=='usuario')
-                                                    <option value="{{$rol->name}}" {{$rol->name=='usuario' ? 'selected':'' }}>{{$rol->name}}</option>
-                                                @else
-                                                    <option value="">no exixte el rol usuario</option>
-                                                @endif
-                                            @endforeach
-                                       </select>
+                                        <select class="form-control" disabled>
+                                            <option selected>usuario</option>
+                                        </select>
+                                        <!-- ⭐ CAMPO OCULTO QUE SÍ SE ENVÍA -->
+                                        <input type="hidden" name="rol" value="usuario">
                                     </div>
                                     @error('rol')
                                     <small style="color: red">{{$message}}</small>
@@ -93,7 +87,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <!-- CARNET-->
+                            <!-- CÉDULA (CAMBIADO A type="text") -->
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="ci">Cédula de identidad <b>(*)</b></label>
@@ -218,9 +212,7 @@
                         </div>
                     </form>
                 </div>
-                <!-- /.card-body -->
             </div>
-            <!-- /.card -->
         </div>
     </div>
 @stop

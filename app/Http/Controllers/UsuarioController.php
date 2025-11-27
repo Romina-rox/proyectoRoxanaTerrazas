@@ -15,11 +15,11 @@ class UsuarioController extends Controller
     {
         $usuarios = Usuario::with(['user', 'hospital'])->get();
         return view('admin.usuarios.index', compact('usuarios'));
-    }  
+    } 
     
     public function create()
     {
-        $roles=Role::all();
+        $roles = Role::all();
         $hospitales = Hospital::all();
         return view('admin.usuarios.create', compact('hospitales','roles'));
     }
@@ -29,10 +29,10 @@ class UsuarioController extends Controller
         $request->validate([
             'nombres' => 'required',
             'apellidos' => 'required',
-            'ci' => 'required|unique:usuarios',
+            'ci' => 'required|numeric|unique:usuarios', // ⭐ AGREGADO 'numeric'
             'rol' => 'required',
             'fecha_nacimiento' => 'required',
-            'telefono' => 'required',
+            'telefono' => 'required|numeric', // ⭐ AGREGADO 'numeric'
             'direccion' => 'required',
             'cargo' => 'required',
             'hospital_id' => 'required|exists:hospitals,id',
@@ -44,25 +44,23 @@ class UsuarioController extends Controller
         $user = new User();
         $user->name = $request->nombres . " " . $request->apellidos;
         $user->email = $request->email;
-        $user->password = Hash::make($request->ci); // CI como contraseña
+        $user->password = Hash::make($request->ci);
         $user->save();
 
-
         $user->assignRole($request->rol);
-        // Asignar rol de usuario por defecto
-         
+        
         $rolUsuario = Role::where('name', 'usuario')->first();
         if ($rolUsuario) {
             $user->assignRole($rolUsuario);
         }
 
-        // Crear registro en tabla usuarios
+        // ⭐ ELIMINA Crypt::encryptString - el mutador lo hace automáticamente
         $usuario = new Usuario();
         $usuario->user_id = $user->id;
         $usuario->hospital_id = $request->hospital_id;
         $usuario->nombres = $request->nombres;
         $usuario->apellidos = $request->apellidos;
-        $usuario->ci = $request->ci;
+        $usuario->ci = $request->ci; // ✅ Sin cifrado manual
         $usuario->fecha_nacimiento = $request->fecha_nacimiento;
         $usuario->telefono = $request->telefono;
         $usuario->direccion = $request->direccion;
@@ -79,7 +77,7 @@ class UsuarioController extends Controller
     {
         $usuario = Usuario::with(['user', 'hospital'])->findOrFail($id);
         $hospitales = Hospital::all();
-        $roles=Role::all();
+        $roles = Role::all();
         return view('admin.usuarios.show', compact('usuario', 'hospitales','roles'));
     }
     
@@ -87,7 +85,7 @@ class UsuarioController extends Controller
     {
         $usuario = Usuario::with(['user', 'hospital'])->findOrFail($id);
         $hospitales = Hospital::all();
-        $roles=Role::all();
+        $roles = Role::all();
         return view('admin.usuarios.edit', compact('usuario', 'hospitales','roles'));
     }
     
@@ -98,12 +96,12 @@ class UsuarioController extends Controller
         $request->validate([
             'nombres' => 'required',
             'apellidos' => 'required',
-            'ci' => 'required|unique:usuarios,ci,' . $usuario->id,
+            'ci' => 'required|numeric', // ⭐ AGREGADO 'numeric'
             'fecha_nacimiento' => 'required',
-            'telefono' => 'required',
+            'telefono' => 'required|numeric', // ⭐ AGREGADO 'numeric'
             'direccion' => 'required',
             'cargo' => 'required',
-             'rol' => 'required',
+            'rol' => 'required',
             'hospital_id' => 'required|exists:hospitals,id',
             'email' => 'required|email|unique:users,email,' . $usuario->user->id,
             'especialidad' => 'nullable'
@@ -117,11 +115,12 @@ class UsuarioController extends Controller
         $user->save();
 
         $user->syncRoles($request->rol);
-        // Actualizar registro de usuario
+        
+        // ⭐ ELIMINA Crypt::encryptString - el mutador lo hace automáticamente
         $usuario->hospital_id = $request->hospital_id;
         $usuario->nombres = $request->nombres;
         $usuario->apellidos = $request->apellidos;
-        $usuario->ci = $request->ci;
+        $usuario->ci = $request->ci; // ✅ Sin cifrado manual
         $usuario->fecha_nacimiento = $request->fecha_nacimiento;
         $usuario->telefono = $request->telefono;
         $usuario->direccion = $request->direccion;
@@ -136,9 +135,8 @@ class UsuarioController extends Controller
     
     public function destroy($id)
     {
-        $roles=Role::all();
         $usuario = Usuario::findOrFail($id);
-        $usuario->user->delete(); // Esto eliminará automáticamente el registro de usuario por cascade
+        $usuario->user->delete();
         
         return redirect()->route('admin.usuarios.index')
             ->with('mensaje', 'Usuario eliminado correctamente')

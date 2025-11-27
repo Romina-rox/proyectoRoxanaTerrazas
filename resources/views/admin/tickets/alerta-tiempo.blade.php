@@ -30,7 +30,6 @@
                                 <th style="text-align: center">Hospital</th>
                                 <th style="text-align: center">Usuario</th>
                                 <th style="text-align: center">Equipo</th>
-                                <th style="text-align: center">N° Activo</th>
                                 <th style="text-align: center">Fecha Aceptación</th>
                                 <th style="text-align: center">Días Transcurridos</th>
                                 <th style="text-align: center">Prioridad</th>
@@ -61,9 +60,7 @@
                                     </td>
                                     <td>
                                         <strong>{{$ticket->equipo->nombre}}</strong>
-                                        <br><small>{{Str::limit($ticket->descripcion_equipo, 30)}}</small>
-                                    </td>
-                                    <td style="text-align: center">
+                                        <br><small>{{Str::limit($ticket->descripcion_equipo, 30)}}</small> <br>
                                         <span class="badge badge-secondary">{{$ticket->numero_activo}}</span>
                                     </td>
                                     <td style="text-align: center">
@@ -96,17 +93,10 @@
                                                class="btn btn-info btn-sm mb-1" title="Ver detalles">
                                                 <i class="fas fa-eye"></i> Ver
                                             </a>
-                                            
                                             <a href="{{url('/admin/tickets/'.$ticket->id.'/edit')}}" 
                                                class="btn btn-success btn-sm mb-1" title="Editar">
                                                 <i class="fas fa-pencil-alt"></i> Editar
                                             </a>
-                                            
-                                            <button type="button" class="btn btn-primary btn-sm" 
-                                                    title="Contactar usuario"
-                                                    onclick="contactarUsuario('{{$ticket->usuario->user->email}}', '{{$ticket->id}}')">
-                                                <i class="fas fa-phone"></i> Contactar
-                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -117,7 +107,6 @@
                         <div class="alert text-center">
                             <h4><i class="icon fas fa-check-circle"></i> ¡Excelente trabajo!</h4>
                             <p>No hay tickets con alertas de tiempo. Todos los equipos están siendo procesados dentro del tiempo establecido.</p>
-                            
                         </div>
                     @endif
                 </div>
@@ -208,6 +197,19 @@
             background-color: #007bff;
             color: white;
         }
+        /* Alerta suavizada para Atención Requerida */
+        .alert-warning {
+            background-color: #fff !important;              /* Fondo blanco */
+            border-left: 5px solid #ffc107 !important;      /* Línea amarilla suave */
+            color: #4a4a4a !important;                      /* Texto gris elegante */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);         /* Sombrita leve */
+            padding: 15px 18px;
+        }
+        .alert-warning h5 {
+            color: #856404 !important;                      /* Tono suave para el título */
+            font-weight: 700;
+        }
+
     </style>
 @stop
 

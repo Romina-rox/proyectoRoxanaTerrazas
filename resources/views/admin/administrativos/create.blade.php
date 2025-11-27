@@ -114,7 +114,6 @@
                                 </div>
                             </div>
                         <!-- CORREO-->
-
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="email">Email <b>(*)</b></label>

@@ -8,87 +8,87 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             background-color: #f8f9fa;
         }
         
         .comprobante {
-            max-width: 800px;
+            max-width: 750px;
             margin: 0 auto;
             background: white;
-            border: 2px solid #ffc107;
+            border: 2px solid #6495ED;
             border-radius: 10px;
             overflow: hidden;
         }
 
         .header {
-            background: linear-gradient(135deg, #ffc107, #ff9800);
-            color: #212529;
-            padding: 15px;
+            background: linear-gradient(135deg, #6495ED, #87CEEB);
+            color: white;
+            padding: 10px;
             text-align: center;
         }
 
         .header h1 {
             margin: 0;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
         }
 
         .header p {
             margin: 5px 0 0 0;
             opacity: 0.9;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .alert-baja {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
+            background: #E3F2FD;
+            border: 2px solid #6495ED;
             border-radius: 5px;
-            padding: 10px;
-            margin: 15px;
+            padding: 8px;
+            margin: 10px;
             text-align: center;
         }
 
         .alert-baja h3 {
             margin: 0;
-            color: #856404;
-            font-size: 16px;
+            color: #1565C0;
+            font-size: 15px;
         }
 
         .content {
-            padding: 20px;
+            padding: 15px;
         }
 
         /* === Diseño compacto en 2 columnas === */
         .info-container {
             display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
+            gap: 15px;
+            margin-bottom: 15px;
         }
 
         .ticket-info {
             flex: 1;
             background: #f8f9fa;
-            padding: 10px 15px;
+            padding: 8px 12px;
             border-radius: 6px;
-            border-left: 4px solid #ffc107;
+            border-left: 4px solid #6495ED;
         }
 
         .ticket-info h4 {
             margin-top: 0;
-            color: #856404;
-            border-bottom: 2px solid #ffc107;
-            padding-bottom: 6px;
-            font-size: 15px;
+            color: #1565C0;
+            border-bottom: 2px solid #6495ED;
+            padding-bottom: 5px;
+            font-size: 14px;
         }
 
         .info-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             border-bottom: 1px dotted #ccc;
-            padding-bottom: 3px;
-            font-size: 13px;
+            padding-bottom: 2px;
+            font-size: 12px;
         }
 
         .info-row:last-child {
@@ -100,87 +100,87 @@
 
         .estado-badge {
             display: inline-block;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 15px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: #E3F2FD;
+            color: #1565C0;
+            border: 1px solid #BBDEFB;
         }
 
         .problema-detalle, .diagnostico-detalle {
             border-radius: 5px;
-            padding: 10px 15px;
-            margin: 10px 0;
-            font-size: 13px;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 12px;
         }
 
         .problema-detalle {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
+            background: #FFF9C4;
+            border: 1px solid #FFEB3B;
         }
 
         .diagnostico-detalle {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
+            background: #E3F2FD;
+            border: 1px solid #BBDEFB;
         }
 
         .warning-box {
-            background: #fff3cd;
-            border: 2px dashed #ffc107;
+            background: #E3F2FD;
+            border: 2px dashed #6495ED;
             border-radius: 10px;
-            padding: 10px 15px;
-            margin: 15px 0;
-            font-size: 13px;
+            padding: 8px 12px;
+            margin: 12px 0;
+            font-size: 12px;
         }
 
         .warning-box h4 {
-            color: #856404;
-            margin: 0 0 5px 0;
-            font-size: 14px;
+            color: #1565C0;
+            margin: 0 0 4px 0;
+            font-size: 13px;
         }
 
         .firma-section {
-            margin-top: 25px;
+            margin-top: 20px;
             border-top: 2px solid #dee2e6;
-            padding-top: 20px;
+            padding-top: 15px;
         }
 
         .firma-boxes {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .firma-box {
             width: 45%;
             text-align: center;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .firma-line {
             border-bottom: 1px solid #000;
-            margin: 30px 0 8px 0;
+            margin: 25px 0 6px 0;
         }
 
         .entrega-info {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
+            background: #E3F2FD;
+            border: 2px solid #6495ED;
             border-radius: 8px;
-            padding: 10px;
-            margin-top: 15px;
+            padding: 8px;
+            margin-top: 12px;
             text-align: center;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .footer {
             background: #f8f9fa;
-            padding: 10px 25px;
-            font-size: 11px;
+            padding: 8px 20px;
+            font-size: 10px;
             color: #6c757d;
             text-align: center;
-            border-top: 2px solid #ffc107;
+            border-top: 2px solid #6495ED;
         }
 
         @media print {
@@ -194,13 +194,12 @@
 <div class="comprobante">
     <div class="header">
         <h1>COMPROBANTE DE ENTREGA A ACTIVOS FIJOS</h1>
-        <p>Sistema de Seguimiento Técnico - G.A.M. Sacaba</p>
         <p>Ticket #{{ str_pad($ticket->id, 6) }}</p>
     </div>
 
     <div class="alert-baja">
         <h3>EQUIPO DADO DE BAJA - NO REPARABLE</h3>
-        <p style="margin:0; font-size:13px;">Este equipo ha sido evaluado técnicamente y se determina que NO es factible su reparación.</p>
+        <p style="margin:0; font-size:12px;">Este equipo ha sido evaluado técnicamente y se determina que NO es factible su reparación.</p>
     </div>
 
     <div class="content">
@@ -213,7 +212,7 @@
                 <div class="info-row"><span class="label">Cargo:</span><span class="value">{{ucfirst($ticket->usuario->cargo)}}</span></div>
                 <div class="info-row"><span class="label">Equipo:</span><span class="value">{{$ticket->equipo->nombre}}</span></div>
                 <div class="info-row"><span class="label">Descripción:</span><span class="value">{{$ticket->descripcion_equipo}}</span></div>
-                <div class="info-row"><span class="label">Activo Nº:</span><span class="value" style="font-weight:bold;color:#dc3545;">{{$ticket->numero_activo}}</span></div>
+                <div class="info-row"><span class="label">Activo Nº:</span><span class="value" style="font-weight:bold;color:#6495ED;">{{$ticket->numero_activo}}</span></div>
             </div>
 
             <!-- Columna derecha -->
@@ -246,8 +245,8 @@
         @endif
 
         <div class="firma-section">
-            <h4 style="text-align:center;margin-bottom:10px;">CONFORMIDAD DE ENTREGA A ACTIVOS FIJOS</h4>
-            <p style="text-align:center;font-size:13px;">Por medio de la presente, se hace entrega formal del equipo descrito para su gestión administrativa correspondiente.</p>
+            <h4 style="text-align:center;margin-bottom:8px;">CONFORMIDAD DE ENTREGA A ACTIVOS FIJOS</h4>
+            <p style="text-align:center;font-size:12px;">Por medio de la presente, se hace entrega formal del equipo descrito para su gestión administrativa correspondiente.</p>
 
             <div class="firma-boxes">
                 <div class="firma-box">
@@ -265,21 +264,21 @@
             </div>
 
             <div class="entrega-info">
-                <p><strong>Fecha y hora de entrega:</strong> {{$ticket->fecha_entrega->format('d/m/Y - H:i')}}</p>
+                <small><strong>Fecha y hora de entrega:</strong> {{$ticket->fecha_entrega->format('d/m/Y - H:i')}}</small>
             </div>
         </div>
     </div>
 
     <div class="footer">
         <p><strong>IMPORTANTE:</strong> Este documento certifica que el equipo ha sido evaluado técnicamente por el Departamento de Sistemas y se determina su condición de NO REPARABLE.</p>
-        <p>Departamento de Sistemas - Gobierno Autónomo Municipal de Sacaba</p>
+        <small>Departamento de Sistemas - Gobierno Autónomo Municipal de Sacaba</small>
     </div>
 </div>
 
-<div class="no-print" style="text-align:center;margin-top:15px;">
-    <button onclick="window.print()" style="background:#ffc107;color:#212529;border:none;padding:8px 18px;border-radius:5px;font-weight:bold;cursor:pointer;">🖨️ Imprimir</button>
-    <button onclick="descargarWord()" style="background:#007bff;color:white;border:none;padding:8px 18px;border-radius:5px;font-weight:bold;margin-left:8px;cursor:pointer;">📥 Word</button>
-    <button onclick="window.close()" style="background:#6c757d;color:white;border:none;padding:8px 18px;border-radius:5px;font-weight:bold;margin-left:8px;cursor:pointer;">✖️ Cerrar</button>
+<div class="no-print" style="text-align:center;margin-top:12px;">
+    <button onclick="window.print()" style="background:#6495ED;color:white;border:none;padding:7px 16px;border-radius:5px;font-weight:bold;cursor:pointer;">🖨️ Imprimir</button>
+ <!---   <button onclick="descargarWord()" style="background:#007bff;color:white;border:none;padding:7px 16px;border-radius:5px;font-weight:bold;margin-left:6px;cursor:pointer;">📥 Word</button>  -->
+    <button onclick="window.close()" style="background:#6c757d;color:white;border:none;padding:7px 16px;border-radius:5px;font-weight:bold;margin-left:6px;cursor:pointer;">✖️ Cerrar</button>
 </div>
 
 <script>
@@ -288,7 +287,6 @@ function descargarWord() {
     const html = `<!DOCTYPE html><html><head><meta charset='utf-8'><title>Comprobante Activos Fijos - Ticket #{{$ticket->id}}</title></head><body>${comprobante}</body></html>`;
     const blob = new Blob([html], {type: 'application/msword'});
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
     a.href = url;
     a.download = 'comprobante_activos_fijos_ticket_{{ str_pad($ticket->id, 6, "0", STR_PAD_LEFT) }}.doc';
     document.body.appendChild(a);

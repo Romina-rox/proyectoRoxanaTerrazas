@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 
 class Usuario extends Model
 {
@@ -28,7 +29,23 @@ class Usuario extends Model
         'fecha_nacimiento'
     ];
 
-    // Relación con el modelo User------------------ahhhhhhhhhhhhhhh
+    // ⭐ ACCESSOR: Descifra automáticamente al leer
+    public function getCiAttribute($value)
+    {
+        try {
+            return Crypt::decryptString($value);
+        } catch (\Exception $e) {
+            return $value; // Si no está cifrado, devuelve el valor original
+        }
+    }
+
+    // ⭐ MUTATOR: Cifra automáticamente al guardar
+    public function setCiAttribute($value)
+    {
+        $this->attributes['ci'] = Crypt::encryptString($value);
+    }
+
+    // Relación con el modelo User
     public function user()
     {
         return $this->belongsTo(User::class);
