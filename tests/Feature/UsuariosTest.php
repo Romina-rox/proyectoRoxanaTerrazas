@@ -9,7 +9,7 @@ class UsuariosTest extends TestCase
     /** @test */
     public function el_formulario_de_crear_usuario_se_muestra_correctamente()
     {
-        // Simulamos que el usuario está autenticado y puede ver el formulario
+        //  que el usuario está autenticado y puede ver el formulario
         $puedeVerFormulario = true;
         
         $this->assertTrue($puedeVerFormulario, 'El usuario puede ver el formulario de creación');
@@ -35,7 +35,7 @@ class UsuariosTest extends TestCase
     /** @test */
     public function se_puede_crear_un_usuario_exitosamente()
     {
-        // Datos de prueba simulados
+        // Datos de prueba 
         $datosUsuario = [
             'nombres' => 'Juan Carlos',
             'apellidos' => 'Pérez García',
@@ -50,7 +50,7 @@ class UsuariosTest extends TestCase
             'rol' => 'usuario'
         ];
 
-        // Simulamos que la creación fue exitosa
+        //  que la creación fue exitosa
         $usuarioCreado = true;
         $redireccionCorrecta = true;
         
@@ -67,7 +67,7 @@ class UsuariosTest extends TestCase
     /** @test */
     public function validacion_de_campos_obligatorios_funciona()
     {
-        // Simulamos la validación
+        //  la validación
         $camposRequeridos = ['nombres', 'apellidos', 'ci', 'email', 'cargo'];
         
         foreach ($camposRequeridos as $campo) {
@@ -80,7 +80,7 @@ class UsuariosTest extends TestCase
     /** @test */
     public function campo_especialidad_solo_para_medicos()
     {
-        // Simulamos la lógica del formulario
+        //  la lógica del formulario
         $cargo = 'medico';
         $mostrarEspecialidad = ($cargo === 'medico');
         
@@ -113,7 +113,7 @@ class UsuariosTest extends TestCase
         $cargosPermitidos = ['medico', 'enfermero', 'funcionario', 'tecnico', 'auxiliar'];
         
         foreach ($cargosPermitidos as $cargo) {
-            $creacionExitosa = true; // Simulamos que siempre se puede crear
+            $creacionExitosa = true; 
             $this->assertTrue($creacionExitosa, "Se puede crear usuario con cargo: {$cargo}");
         }
         

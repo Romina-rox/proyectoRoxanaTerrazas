@@ -115,7 +115,7 @@ class TicketController extends Controller
         
         $request->validate([
             'equipo_id' => 'required|exists:equipos,id',
-            'numero_activo' => 'required', // YA NO VALIDA UNIQUE
+            'numero_activo' => 'required',
             'descripcion_problema' => 'required',
             'descripcion_equipo' => 'required',
             'detalle_salida' => 'nullable',

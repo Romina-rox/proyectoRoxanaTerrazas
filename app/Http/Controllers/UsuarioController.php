@@ -29,10 +29,10 @@ class UsuarioController extends Controller
         $request->validate([
             'nombres' => 'required',
             'apellidos' => 'required',
-            'ci' => 'required|numeric|unique:usuarios', // ⭐ AGREGADO 'numeric'
+            'ci' => 'required', // ✅ SIN |numeric - acepta alfanumérico
             'rol' => 'required',
             'fecha_nacimiento' => 'required',
-            'telefono' => 'required|numeric', // ⭐ AGREGADO 'numeric'
+            'telefono' => 'required',
             'direccion' => 'required',
             'cargo' => 'required',
             'hospital_id' => 'required|exists:hospitals,id',
@@ -54,13 +54,13 @@ class UsuarioController extends Controller
             $user->assignRole($rolUsuario);
         }
 
-        // ⭐ ELIMINA Crypt::encryptString - el mutador lo hace automáticamente
+        // El mutador cifra automáticamente
         $usuario = new Usuario();
         $usuario->user_id = $user->id;
         $usuario->hospital_id = $request->hospital_id;
         $usuario->nombres = $request->nombres;
         $usuario->apellidos = $request->apellidos;
-        $usuario->ci = $request->ci; // ✅ Sin cifrado manual
+        $usuario->ci = $request->ci; // ✅ El mutador lo cifra automáticamente
         $usuario->fecha_nacimiento = $request->fecha_nacimiento;
         $usuario->telefono = $request->telefono;
         $usuario->direccion = $request->direccion;
@@ -96,9 +96,9 @@ class UsuarioController extends Controller
         $request->validate([
             'nombres' => 'required',
             'apellidos' => 'required',
-            'ci' => 'required|numeric', // ⭐ AGREGADO 'numeric'
+            'ci' => 'required', // ✅ SIN |numeric - acepta alfanumérico
             'fecha_nacimiento' => 'required',
-            'telefono' => 'required|numeric', // ⭐ AGREGADO 'numeric'
+            'telefono' => 'required',
             'direccion' => 'required',
             'cargo' => 'required',
             'rol' => 'required',
@@ -116,11 +116,11 @@ class UsuarioController extends Controller
 
         $user->syncRoles($request->rol);
         
-        // ⭐ ELIMINA Crypt::encryptString - el mutador lo hace automáticamente
+        // El mutador cifra automáticamente
         $usuario->hospital_id = $request->hospital_id;
         $usuario->nombres = $request->nombres;
         $usuario->apellidos = $request->apellidos;
-        $usuario->ci = $request->ci; // ✅ Sin cifrado manual
+        $usuario->ci = $request->ci; // ✅ El mutador lo cifra automáticamente
         $usuario->fecha_nacimiento = $request->fecha_nacimiento;
         $usuario->telefono = $request->telefono;
         $usuario->direccion = $request->direccion;

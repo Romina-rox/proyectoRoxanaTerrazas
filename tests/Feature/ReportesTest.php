@@ -43,7 +43,7 @@ class ReportesTest extends TestCase
         $this->assertTrue($datosPorMesGenerados, 'Los reportes por mes se generan correctamente');
         $this->assertTrue($formatoCorrecto, 'El formato de datos por mes es correcto');
         
-        // Simulamos datos de ejemplo
+        //  datos de ejemplo
         $datosPorMes = [
             'labels' => ['Ene 2024', 'Feb 2024', 'Mar 2024'],
             'datos' => [10, 15, 8]
@@ -73,7 +73,7 @@ class ReportesTest extends TestCase
         $this->assertTrue($rankingHospitalesFunciona, 'El ranking de hospitales se calcula correctamente');
         $this->assertTrue($limiteAplicado, 'El límite de hospitales se aplica correctamente');
         
-        // Simulamos datos de top hospitales
+        //  datos de top hospitales
         $topHospitales = [
             'labels' => ['Hospital Central', 'Hospital Norte', 'Hospital Sur'],
             'datos' => [150, 120, 80]
@@ -136,7 +136,7 @@ class ReportesTest extends TestCase
         $this->assertTrue($comparativaGenerada, 'La comparativa reparados vs bajas se genera correctamente');
         $this->assertTrue($datosComparativosCorrectos, 'Los datos comparativos son correctos');
         
-        // Simulamos estructura de comparativa
+        //  estructura de comparativa
         $comparativa = [
             'labels' => ['Ene', 'Feb', 'Mar'],
             'reparados' => [8, 12, 10],

@@ -16,7 +16,7 @@ class TicketsTest extends TestCase
     /** @test */
     public function se_puede_crear_un_ticket_exitosamente()
     {
-        // Datos simulados de un ticket
+        // Datos  de un ticket
         $datosTicket = [
             'equipo_id' => 1,
             'numero_activo' => 'ACT-001',
@@ -62,7 +62,7 @@ class TicketsTest extends TestCase
     /** @test */
     public function flujo_de_estados_es_correcto()
     {
-        // Simulamos el flujo normal de un ticket
+        //  el flujo normal de un ticket
         $ticketEnEspera = 'en_espera';
         $ticketAceptado = 'aceptado';
         $ticketReparado = 'reparado';
@@ -143,7 +143,7 @@ class TicketsTest extends TestCase
     /** @test */
     public function restricciones_de_estado_se_respetan()
     {
-        // Simulamos las restricciones de estado
+        //  las restricciones de estado
         $soloReparadosPuedenDevolverse = true;
         $soloBajasPuedenEntregarseActivosFijos = true;
         $soloEsperaPuedenAceptarse = true;

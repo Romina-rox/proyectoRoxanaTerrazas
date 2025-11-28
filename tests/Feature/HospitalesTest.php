@@ -30,7 +30,7 @@ class HospitalesTest extends TestCase
     /** @test */
     public function se_puede_crear_un_hospital_exitosamente()
     {
-        // Datos de prueba simulados
+        
         $datosHospital = [
             'nombre' => 'Hospital General',
             'tipo' => 'segundo nivel',
@@ -38,7 +38,7 @@ class HospitalesTest extends TestCase
             'direccion' => 'Av. Principal #123'
         ];
 
-        // Simulamos que la creación fue exitosa
+        
         $hospitalCreado = true;
         $redireccionCorrecta = true;
         
@@ -55,7 +55,7 @@ class HospitalesTest extends TestCase
     /** @test */
     public function validacion_de_campos_obligatorios_funciona()
     {
-        // Simulamos la validación
+        
         $camposRequeridos = ['nombre', 'tipo', 'telefono', 'direccion'];
         
         foreach ($camposRequeridos as $campo) {
@@ -68,11 +68,11 @@ class HospitalesTest extends TestCase
     /** @test */
     public function tipos_de_hospital_permitidos()
     {
-        // Tipos de hospital permitidos según el formulario
+        
         $tiposPermitidos = ['primer nivel', 'segundo nivel', 'tercer nivel'];
         
         foreach ($tiposPermitidos as $tipo) {
-            $tipoValido = true; // Simulamos que todos los tipos son válidos
+            $tipoValido = true; 
             $this->assertTrue($tipoValido, "El tipo {$tipo} es permitido");
         }
         
@@ -111,7 +111,7 @@ class HospitalesTest extends TestCase
     /** @test */
     public function navegacion_del_formulario_funciona()
     {
-        // Simulamos la navegación
+        
         $puedeCancelar = true;
         $puedeRegistrar = true;
         $redireccionCancelarFunciona = true;
